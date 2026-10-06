@@ -1,6 +1,6 @@
 //! 原生 Guard（请求守卫）：不依赖任何框架的通用入口。
 //!
-//! 八个框架适配器（Axum / Actix Web / Rocket / Poem / Salvo / Warp / Bee / e-cat）
+//! 八个框架适配器（Axum / Actix Web / Rocket / Poem / Salvo / Warp / bee-rust / e-cat）
 //! 全部产出 `Guard`；未适配的框架也可以自己从应用状态里克隆一份。
 
 use std::sync::Arc;

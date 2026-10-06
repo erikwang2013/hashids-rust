@@ -1,5 +1,5 @@
 #![cfg(feature = "bee")]
-//! Bee 端到端：原生 Filter 把 Guard 注入 Context，controller 取出后编出官方向量值。
+//! bee-rust 端到端：原生 Filter 把 Guard 注入 Context，controller 取出后编出官方向量值。
 
 use std::path::Path;
 use std::sync::Arc;

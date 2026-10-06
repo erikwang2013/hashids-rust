@@ -3,7 +3,7 @@
 //! 内核原生实现 hashids 算法（对齐 [vinkla/hashids](https://github.com/vinkla/hashids)
 //! 官方测试向量），配置与用法对齐其「多连接 + 默认连接 + Manager + Factory」风格；
 //! 默认**零依赖**，八个 Web 框架适配（Axum / Actix Web / Rocket / Poem / Salvo /
-//! Warp / Bee / e-cat）按需开启 feature。
+//! Warp / bee-rust / e-cat）按需开启 feature。
 //!
 //! ```
 //! use hashids::{Config, ConnectionConfig, HashidsManager};

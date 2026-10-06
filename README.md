@@ -13,7 +13,7 @@
 
 <p align="center"><strong>哈希迪 Hashy</strong> — 项目宠物，胸口的 <code>#</code> 是它的招牌</p>
 
-把数据库自增 ID 换成短小、不可猜测的字符串，**一套 API 同时跑在 Axum、Actix Web、Rocket、Poem、Salvo、Warp、Bee、e-cat 上**。
+把数据库自增 ID 换成短小、不可猜测的字符串，**一套 API 同时跑在 Axum、Actix Web、Rocket、Poem、Salvo、Warp、bee-rust、e-cat 上**。
 
 内核原生实现 hashids 算法（对齐 [vinkla/hashids](https://github.com/vinkla/hashids) 的官方测试向量）；配置与用法对齐 [**vinkla/hashids**](https://github.com/vinkla/laravel-hashids)（多连接、默认连接、`HashidsManager` + 工厂），迁移成本低。默认 feature 下**零第三方依赖**。
 
@@ -25,11 +25,11 @@
 
 **核心特性：**
 
-- **多框架兼容**：同一套 API 同时支持 Axum、Actix Web、Rocket、Poem、Salvo、Warp、Bee、e-cat；未适配的框架用原生 `Guard` 即可接入，迁移成本极低。
+- **多框架兼容**：同一套 API 同时支持 Axum、Actix Web、Rocket、Poem、Salvo、Warp、bee-rust、e-cat；未适配的框架用原生 `Guard` 即可接入，迁移成本极低。
 - **多连接支持**：一个应用可同时配置多套 salt/length 组合（如用户 ID 与订单 ID 使用不同盐值），通过 `connection(Some("xxx"))` 切换。
 - **无框架依赖**：不依赖任何特定框架即可独立使用，直接 `HashidsManager::new(config)` 即可工作；默认 feature 下零第三方依赖。
 - **对齐 vinkla/hashids**：`Config`、连接配置（`salt` / `min_hash_length` / `alphabet`）与 `HashidsManager` + `HashidsFactory` 的结构与 vinkla/hashids 一致，语义可平滑迁移。
-- **框架原生风格**：各框架集成遵循各自的惯用法——Axum 用提取器、Actix Web 用 `FromRequest`、Rocket 用请求守卫、Poem 用提取器、Salvo 用 Depot 注入器、Warp 用 Filter、Bee 用原生 Filter 钩子、e-cat 用 Extension 层。
+- **框架原生风格**：各框架集成遵循各自的惯用法——Axum 用提取器、Actix Web 用 `FromRequest`、Rocket 用请求守卫、Poem 用提取器、Salvo 用 Depot 注入器、Warp 用 Filter、bee-rust 用原生 Filter 钩子、e-cat 用 Extension 层。
 
 **适用场景：**
 
@@ -64,7 +64,7 @@ hashids-rust/
 │   └── integrations/                # 八框架适配（均 feature 门控、只做接线）
 │       ├── axum.rs · actix.rs · rocket.rs · poem.rs
 │       ├── salvo.rs · warp.rs
-│       └── bee.rs（bee_router）· ecat.rs（e-cat，底层即 axum）
+│       └── bee.rs（bee-rust）· ecat.rs（e-cat，底层即 axum）
 ├── tests/
 │   ├── vectors.rs                   # 官方测试向量（vinkla/hashids 全量转写）
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
@@ -106,7 +106,7 @@ hashids-rust/
 - **编解码 API**：`encode()` / `decode()` / `encode_hex()` / `decode_hex()`，经代理方法落到默认连接，无需显式 `connection()`。
 - **多连接管理**：`connection(Some("alternative"))` 切换；懒加载构建，同一连接只构建一次。
 - **原生 Guard**：不依赖任何框架的请求守卫，放进任意框架的应用状态、每请求克隆即可用；八个适配器全部产出 `Guard`。
-- **八框架适配**：Axum 用 `FromRequestParts`、Actix Web 用 `FromRequest`、Rocket 用 `FromRequest` 守卫、Poem 用 `FromRequest`、Salvo 用 Depot 注入器（`.hoop()`）、Warp 用 Filter、Bee 用原生 `Filter` 钩子、e-cat 用 `Extension` 层，各自遵循框架惯用法。
+- **八框架适配**：Axum 用 `FromRequestParts`、Actix Web 用 `FromRequest`、Rocket 用 `FromRequest` 守卫、Poem 用 `FromRequest`、Salvo 用 Depot 注入器（`.hoop()`）、Warp 用 Filter、bee-rust 用原生 `Filter` 钩子、e-cat 用 `Extension` 层，各自遵循框架惯用法。
 - **快速失败**：默认连接未配置时，Warp 在接线期报错、e-cat/Guard 在接线期报错、其余框架在提取时给出 500——配置错误不会静默降级。
 - **零依赖内核**：`HashidsManager::new(config)` 即可工作，默认 feature 不引入任何第三方 crate。
 
@@ -155,7 +155,7 @@ hashids-rust = { git = "https://github.com/erikwang2013/hashids-rust", tag = "v1
 | `poem` | Poem 3 | `Route::data(Arc::new(manager))` |
 | `salvo` | Salvo 1 | `Router::hoop(HashidsInjector::new(manager))` |
 | `warp` | Warp 0.4 | `hashids(manager)` → Filter |
-| `bee` | Bee（`bee_router` 1） | `HashidsFilter` 或直接配合 axum 提取器 |
+| `bee` | bee-rust（`bee_router` 1） | `HashidsFilter` 或直接配合 axum 提取器 |
 | `ecat` | e-cat（`ecat` 4） | `router.layer(hashids_layer(guard))` |
 
 > **运行环境**：核心（默认 feature）需要 Rust **1.85+**。框架适配的 MSRV 以各框架 crate 自身为准——Actix Web 4.15 需 **1.88+**、Salvo 1.0 需 **1.94+**，`--all-features` 实际按最高的 **1.94** 计。
@@ -361,9 +361,9 @@ let route = warp::get()
 
 ---
 
-## Bee
+## bee-rust
 
-[`bee_router`](https://github.com/erikwang2013/bee-rust) 的路由底层就是 axum 0.8：handler 即 axum handler，直接配合上面的 `axum` 提取器使用；bee 原生侧提供 `HashidsFilter`——把 `Guard` 注入每次 `Context::dispatch` 的请求扩展。
+[`bee_router`](https://github.com/erikwang2013/bee-rust) 的路由底层就是 axum 0.8：handler 即 axum handler，直接配合上面的 `axum` 提取器使用；bee-rust 原生侧提供 `HashidsFilter`——把 `Guard` 注入每次 `Context::dispatch` 的请求扩展。
 
 ```rust
 use std::sync::Arc;

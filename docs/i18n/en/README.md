@@ -13,7 +13,7 @@
 
 <p align="center"><strong>Hashy</strong> — the project mascot; the <code>#</code> on its chest is its signature</p>
 
-Turn database auto-increment IDs into short, unguessable strings, with **a single API running on Axum, Actix Web, Rocket, Poem, Salvo, Warp, Bee, and e-cat at the same time**.
+Turn database auto-increment IDs into short, unguessable strings, with **a single API running on Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, and e-cat at the same time**.
 
 The kernel implements the hashids algorithm natively (aligned with the official test vectors of [vinkla/hashids](https://github.com/vinkla/hashids)); configuration and usage follow [**vinkla/hashids**](https://github.com/vinkla/laravel-hashids) (multiple connections, default connection, `HashidsManager` + factory), so migration cost is low. With default features, **zero third-party dependencies**.
 
@@ -25,11 +25,11 @@ This package, `erikwang2013/hashids-rust`, is a **native Rust implementation of 
 
 **Core features:**
 
-- **Multi-framework compatibility**: the same API supports Axum, Actix Web, Rocket, Poem, Salvo, Warp, Bee, and e-cat; for frameworks without an adapter, the native `Guard` is enough to integrate — migration cost is minimal.
+- **Multi-framework compatibility**: the same API supports Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, and e-cat; for frameworks without an adapter, the native `Guard` is enough to integrate — migration cost is minimal.
 - **Multiple connections**: one application can configure several salt/length combinations at once (e.g. different salts for user IDs and order IDs), switched via `connection(Some("xxx"))`.
 - **No framework dependency**: usable standalone without depending on any particular framework — `HashidsManager::new(config)` just works; with default features, zero third-party dependencies.
 - **Aligned with vinkla/hashids**: `Config`, connection configuration (`salt` / `min_hash_length` / `alphabet`), and the structure of `HashidsManager` + `HashidsFactory` match vinkla/hashids, so semantics migrate smoothly.
-- **Framework-native style**: each integration follows its framework's idioms — Axum uses extractors, Actix Web uses `FromRequest`, Rocket uses request guards, Poem uses extractors, Salvo uses a Depot injector, Warp uses Filters, Bee uses native Filter hooks, and e-cat uses an Extension layer.
+- **Framework-native style**: each integration follows its framework's idioms — Axum uses extractors, Actix Web uses `FromRequest`, Rocket uses request guards, Poem uses extractors, Salvo uses a Depot injector, Warp uses Filters, bee-rust uses native Filter hooks, and e-cat uses an Extension layer.
 
 **Use cases:**
 
@@ -64,7 +64,7 @@ hashids-rust/
 │   └── integrations/                # eight framework adapters (all feature-gated, wiring only)
 │       ├── axum.rs · actix.rs · rocket.rs · poem.rs
 │       ├── salvo.rs · warp.rs
-│       └── bee.rs (bee_router) · ecat.rs (e-cat, backed by axum)
+│       └── bee.rs (bee-rust) · ecat.rs (e-cat, backed by axum)
 ├── tests/
 │   ├── vectors.rs                   # official test vectors (full transcription of vinkla/hashids)
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
@@ -106,7 +106,7 @@ Six capability groups, all built around the same kernel:
 - **Encoding API**: `encode()` / `decode()` / `encode_hex()` / `decode_hex()`; proxy methods land on the default connection, no explicit `connection()` needed.
 - **Multi-connection management**: switch with `connection(Some("alternative"))`; built lazily, each connection is constructed only once.
 - **Native Guard**: a framework-independent request guard that works by dropping it into any framework's application state and cloning it per request; all eight adapters produce a `Guard`.
-- **Eight framework adapters**: Axum uses `FromRequestParts`, Actix Web uses `FromRequest`, Rocket uses a `FromRequest` guard, Poem uses `FromRequest`, Salvo uses a Depot injector (`.hoop()`), Warp uses a Filter, Bee uses native `Filter` hooks, and e-cat uses an `Extension` layer — each following its framework's idioms.
+- **Eight framework adapters**: Axum uses `FromRequestParts`, Actix Web uses `FromRequest`, Rocket uses a `FromRequest` guard, Poem uses `FromRequest`, Salvo uses a Depot injector (`.hoop()`), Warp uses a Filter, bee-rust uses native `Filter` hooks, and e-cat uses an `Extension` layer — each following its framework's idioms.
 - **Fail fast**: when the default connection is not configured, Warp errors at wiring time, e-cat/Guard errors at wiring time, and the remaining frameworks return 500 at extraction — a configuration error never degrades silently.
 - **Zero-dependency kernel**: `HashidsManager::new(config)` just works; default features pull in no third-party crates.
 
@@ -155,7 +155,7 @@ Enable framework adapters as needed (none are compiled by default):
 | `poem` | Poem 3 | `Route::data(Arc::new(manager))` |
 | `salvo` | Salvo 1 | `Router::hoop(HashidsInjector::new(manager))` |
 | `warp` | Warp 0.4 | `hashids(manager)` → Filter |
-| `bee` | Bee (`bee_router` 1) | `HashidsFilter` or use with the axum extractor directly |
+| `bee` | bee-rust (`bee_router` 1) | `HashidsFilter` or use with the axum extractor directly |
 | `ecat` | e-cat (`ecat` 4) | `router.layer(hashids_layer(guard))` |
 
 > **Runtime requirements**: the core (default features) requires Rust **1.85+**. The MSRV of each framework adapter follows the framework crate itself — Actix Web 4.15 needs **1.88+** and Salvo 1.0 needs **1.94+**, so `--all-features` effectively targets the highest, **1.94**.
@@ -361,9 +361,9 @@ let route = warp::get()
 
 ---
 
-## Bee
+## bee-rust
 
-[`bee_router`](https://github.com/erikwang2013/bee-rust) is built on axum 0.8 under the hood: a handler is an axum handler, so it works directly with the `axum` extractor above; on the native bee side there is `HashidsFilter` — it injects a `Guard` into the request extensions of every `Context::dispatch`.
+[`bee_router`](https://github.com/erikwang2013/bee-rust) is built on axum 0.8 under the hood: a handler is an axum handler, so it works directly with the `axum` extractor above; on the native bee-rust side there is `HashidsFilter` — it injects a `Guard` into the request extensions of every `Context::dispatch`.
 
 ```rust
 use std::sync::Arc;

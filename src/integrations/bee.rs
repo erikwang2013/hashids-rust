@@ -1,4 +1,4 @@
-//! Bee（[`bee_router`]）集成。
+//! bee-rust（[`bee_router`]）集成。
 //!
 //! bee 的路由底层就是 axum 0.8：handler 即 axum handler，直接配合 `axum`
 //! feature 的提取器使用。bee 原生侧提供 [`HashidsFilter`]——把 [`Guard`] 注入
