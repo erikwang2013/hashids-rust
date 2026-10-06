@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 612" role="img" aria-labelledby="reqTitle reqDesc">
+  <title id="reqTitle">erikwang2013/hashids-rust 请求周期</title>
+  <desc id="reqDesc">从请求进入到返回：接线期解析一次默认连接，运行期每个请求只做 Guard 克隆与编解码；默认连接未配置时快速失败。</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .bg        { fill: #ffffff; }
+      .card      { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .c-mask    { fill: #ffffff; }
+      .c-frontend { fill: rgba(34,211,238,.15);  stroke: #0891b2; stroke-width: 1.5; }
+      .c-backend  { fill: rgba(52,211,153,.18);  stroke: #059669; stroke-width: 1.5; }
+      .c-cloud    { fill: rgba(251,191,36,.18);  stroke: #d97706; stroke-width: 1.5; }
+      .c-database { fill: rgba(167,139,250,.18); stroke: #7c3aed; stroke-width: 1.5; }
+      .c-security { fill: rgba(244,63,94,.14);   stroke: #e11d48; stroke-width: 1.5; }
+      .t-primary { fill: #0f172a; font-weight: 600; }
+      .t-muted   { fill: #475569; }
+      .t-dim     { fill: #94a3b8; }
+      .t-frontend   { fill: #0891b2; font-weight: 600; }
+      .t-backend    { fill: #059669; font-weight: 600; }
+      .t-cloud      { fill: #d97706; font-weight: 600; }
+      .t-database   { fill: #7c3aed; font-weight: 600; }
+      .t-security   { fill: #e11d48; font-weight: 600; }
+      .a-default { stroke: #94a3b8; fill: none; }
+      .a-head    { fill: #94a3b8; }
+
+      @media (prefers-color-scheme: dark) {
+        .bg        { fill: #0b1220; }
+        .card      { fill: #0f172a; stroke: #1e293b; }
+        .c-mask    { fill: #0f172a; }
+        .c-frontend { fill: rgba(8,51,68,.40);   stroke: #22d3ee; }
+        .c-backend  { fill: rgba(6,78,59,.40);   stroke: #34d399; }
+        .c-cloud    { fill: rgba(120,53,15,.35); stroke: #fbbf24; }
+        .c-database { fill: rgba(76,29,149,.40); stroke: #a78bfa; }
+        .c-security { fill: rgba(76,5,25,.40);   stroke: #fb7185; }
+        .t-primary { fill: #f8fafc; }
+        .t-muted   { fill: #94a3b8; }
+        .t-dim     { fill: #64748b; }
+        .t-frontend   { fill: #22d3ee; }
+        .t-backend    { fill: #34d399; }
+        .t-cloud      { fill: #fbbf24; }
+        .t-database   { fill: #a78bfa; }
+        .t-security   { fill: #fb7185; }
+        .a-default { stroke: #64748b; }
+        .a-head    { fill: #64748b; }
+      }
+    </style>
+
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="612"/>
+
+  <text x="24" y="40" class="t-primary" font-size="20">请求周期 · Request Cycle</text>
+  <text x="24" y="62" class="t-muted" font-size="11">接线期解析一次默认连接；运行期每个请求只做 Guard 克隆与编解码</text>
+
+  <!-- request flow arrows -->
+  <line class="a-default" x1="228" y1="202" x2="248" y2="202" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line class="a-default" x1="428" y1="202" x2="448" y2="202" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line class="a-default" x1="628" y1="202" x2="648" y2="202" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line class="a-default" x1="828" y1="202" x2="848" y2="202" stroke-width="1.5" marker-end="url(#ah)"/>
+
+  <!-- stage 1 -->
+  <rect class="c-mask"     x="52" y="140" width="176" height="124" rx="10"/>
+  <rect class="c-frontend" x="52" y="140" width="176" height="124" rx="10"/>
+  <text class="t-primary" x="140" y="182" font-size="12" text-anchor="middle">请求进入</text>
+  <text class="t-muted"   x="140" y="208" font-size="9"  text-anchor="middle">GET /user · 路由命中</text>
+  <text class="t-dim"     x="140" y="232" font-size="8"  text-anchor="middle">框架自己的入口</text>
+
+  <!-- stage 2 -->
+  <rect class="c-mask"    x="252" y="140" width="176" height="124" rx="10"/>
+  <rect class="c-backend" x="252" y="140" width="176" height="124" rx="10"/>
+  <text class="t-primary" x="340" y="182" font-size="12" text-anchor="middle">取出 Guard</text>
+  <text class="t-muted"   x="340" y="208" font-size="9"  text-anchor="middle">提取器 / 守卫 / 过滤器 / hoop</text>
+  <text class="t-dim"     x="340" y="232" font-size="8"  text-anchor="middle">接线期已解析（Arc 克隆）</text>
+
+  <!-- stage 3 -->
+  <rect class="c-mask"  x="452" y="140" width="176" height="124" rx="10"/>
+  <rect class="c-cloud" x="452" y="140" width="176" height="124" rx="10"/>
+  <text class="t-primary" x="540" y="182" font-size="12" text-anchor="middle">handler 编解码</text>
+  <text class="t-muted"   x="540" y="208" font-size="9"  text-anchor="middle">guard.encode(&amp;[1, 2, 3])</text>
+  <text class="t-dim"     x="540" y="232" font-size="8"  text-anchor="middle">guard.decode(hash)</text>
+
+  <!-- stage 4 -->
+  <rect class="c-mask"     x="652" y="140" width="176" height="124" rx="10"/>
+  <rect class="c-database" x="652" y="140" width="176" height="124" rx="10"/>
+  <text class="t-primary" x="740" y="182" font-size="12" text-anchor="middle">连接解析</text>
+  <text class="t-muted"   x="740" y="208" font-size="9"  text-anchor="middle">命中缓存 → Arc 复用</text>
+  <text class="t-dim"     x="740" y="232" font-size="8"  text-anchor="middle">未命中 → make() 构建</text>
+
+  <!-- stage 5 -->
+  <rect class="c-mask"     x="852" y="140" width="176" height="124" rx="10"/>
+  <rect class="c-frontend" x="852" y="140" width="176" height="124" rx="10"/>
+  <text class="t-primary" x="940" y="182" font-size="12" text-anchor="middle">响应</text>
+  <text class="t-muted"   x="940" y="208" font-size="9"  text-anchor="middle">短 ID / 原数字</text>
+  <text class="t-dim"     x="940" y="232" font-size="8"  text-anchor="middle">返回给调用方</text>
+
+  <!-- failure branch -->
+  <line class="a-default" x1="340" y1="268" x2="340" y2="376" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+  <text class="t-dim" x="352" y="326" font-size="8">未配置默认连接</text>
+
+  <rect class="c-mask"     x="52" y="380" width="976" height="114" rx="10"/>
+  <rect class="c-security" x="52" y="380" width="976" height="114" rx="10"/>
+  <text class="t-security" x="76" y="412" font-size="12">失败路径 · 默认连接未配置</text>
+  <text class="t-muted"    x="76" y="440" font-size="9">Warp / e-cat / Guard：接线期 from_manager() 直接报错，启动即失败</text>
+  <text class="t-muted"    x="76" y="461" font-size="9">其余框架：提取时返回 500 —— 配置错误不会静默降级</text>
+  <text class="t-dim"      x="76" y="482" font-size="9">编解码自身的非法输入不报错：返回空哨兵（对齐 PHP 语义）</text>
+
+  <text class="t-dim" x="24" y="600" font-size="9">© 2026 erik · https://erik.xyz</text>
+</svg>

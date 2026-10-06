@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 660" role="img" aria-labelledby="lifeTitle lifeDesc">
+  <title id="lifeTitle">erikwang2013/hashids-rust 生命周期</title>
+  <desc id="lifeDesc">三个阶段：构建期解析一次默认连接，运行期零额外成本（懒构建 + 缓存），释放期无外部资源。</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .bg        { fill: #ffffff; }
+      .lane      { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .t-primary { fill: #0f172a; font-weight: 600; }
+      .t-muted   { fill: #475569; }
+      .t-dim     { fill: #94a3b8; }
+      .t-frontend { fill: #0891b2; font-weight: 600; }
+      .t-backend  { fill: #059669; font-weight: 600; }
+      .t-security { fill: #e11d48; font-weight: 600; }
+      .a-emphasis { stroke: #059669; fill: none; }
+      .a-head-emphasis { fill: #059669; }
+
+      @media (prefers-color-scheme: dark) {
+        .bg        { fill: #0b1220; }
+        .lane      { fill: #0f172a; stroke: #1e293b; }
+        .t-primary { fill: #f8fafc; }
+        .t-muted   { fill: #94a3b8; }
+        .t-dim     { fill: #64748b; }
+        .t-frontend { fill: #22d3ee; }
+        .t-backend  { fill: #34d399; }
+        .t-security { fill: #fb7185; }
+        .a-emphasis { stroke: #34d399; }
+        .a-head-emphasis { fill: #34d399; }
+      }
+    </style>
+
+    <marker id="ah-e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head-emphasis"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="660"/>
+
+  <text x="24" y="40" class="t-primary" font-size="20">生命周期 · Lifecycle</text>
+  <text x="24" y="62" class="t-muted" font-size="11">构建期解析一次，运行期零额外成本，释放期无外部资源</text>
+
+  <!-- stage arrows -->
+  <line class="a-emphasis" x1="540" y1="240" x2="540" y2="268" stroke-width="2" marker-end="url(#ah-e)"/>
+  <line class="a-emphasis" x1="540" y1="424" x2="540" y2="452" stroke-width="2" marker-end="url(#ah-e)"/>
+
+  <!-- stage 1 构建期 -->
+  <rect class="lane" x="20" y="88" width="1040" height="152" rx="10"/>
+  <text class="t-frontend" x="44" y="124" font-size="14">构建期 · BUILD</text>
+  <text class="t-muted" x="44" y="156" font-size="10">① cargo add hashids-rust（按需开启框架 feature，默认零依赖）</text>
+  <text class="t-muted" x="44" y="180" font-size="10">② HashidsManager::new(config) —— 配置在此快照，之后不可变</text>
+  <text class="t-muted" x="44" y="204" font-size="10">③ Arc::new(manager) 放进框架状态；Warp / e-cat / Guard 在此解析默认连接、快速失败</text>
+
+  <!-- stage 2 运行期 -->
+  <rect class="lane" x="20" y="272" width="1040" height="152" rx="10"/>
+  <text class="t-backend" x="44" y="308" font-size="14">运行期 · RUNTIME</text>
+  <text class="t-muted" x="44" y="340" font-size="10">① 请求进入 → Guard::clone()（两次原子计数）</text>
+  <text class="t-muted" x="44" y="364" font-size="10">② encode / decode → 连接命中缓存直接复用，不重复构建</text>
+  <text class="t-muted" x="44" y="388" font-size="10">③ 未命中 → HashidsFactory::make() 构建并写入缓存 → 返回短 ID / 原数字</text>
+
+  <!-- stage 3 释放期 -->
+  <rect class="lane" x="20" y="456" width="1040" height="152" rx="10"/>
+  <text class="t-security" x="44" y="492" font-size="14">释放期 · TEARDOWN</text>
+  <text class="t-muted" x="44" y="524" font-size="10">① 进程退出即回收；连接与 Guard 随 Arc 引用计数归零释放</text>
+  <text class="t-muted" x="44" y="548" font-size="10">② 无外部资源（无文件 / 网络句柄），不需要清理钩子</text>
+  <text class="t-dim"   x="44" y="572" font-size="10">③ 常驻服务重建 Manager 即完成配置切换</text>
+
+  <text class="t-dim" x="24" y="640" font-size="9">© 2026 erik · https://erik.xyz</text>
+</svg>

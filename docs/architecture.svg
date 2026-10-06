@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 704" role="img" aria-labelledby="archTitle archDesc">
+  <title id="archTitle">erikwang2013/hashids-rust 架构设计</title>
+  <desc id="archDesc">四层单向依赖：应用调用层、框架适配层（八个 Web 框架）、框架无关核心层、零依赖内核算法。</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .bg          { fill: #ffffff; }
+      .lane        { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .lane-title  { fill: #94a3b8; font-size: 10px; letter-spacing: 1.2px; }
+      .c-mask      { fill: #ffffff; }
+      .c-frontend  { fill: rgba(34,211,238,.15);  stroke: #0891b2; stroke-width: 1.5; }
+      .c-backend   { fill: rgba(52,211,153,.18);  stroke: #059669; stroke-width: 1.5; }
+      .c-cloud     { fill: rgba(251,191,36,.18);  stroke: #d97706; stroke-width: 1.5; }
+      .c-database  { fill: rgba(167,139,250,.18); stroke: #7c3aed; stroke-width: 1.5; }
+      .t-primary   { fill: #0f172a; font-weight: 600; }
+      .t-muted     { fill: #475569; }
+      .t-dim       { fill: #94a3b8; }
+      .a-default   { stroke: #94a3b8; fill: none; }
+      .a-emphasis  { stroke: #059669; fill: none; }
+      .a-head-default  { fill: #94a3b8; }
+      .a-head-emphasis { fill: #059669; }
+
+      @media (prefers-color-scheme: dark) {
+        .bg          { fill: #0b1220; }
+        .lane        { fill: #0f172a; stroke: #1e293b; }
+        .lane-title  { fill: #64748b; }
+        .c-mask      { fill: #0f172a; }
+        .c-frontend  { fill: rgba(8,51,68,.40);   stroke: #22d3ee; }
+        .c-backend   { fill: rgba(6,78,59,.40);   stroke: #34d399; }
+        .c-cloud     { fill: rgba(120,53,15,.35); stroke: #fbbf24; }
+        .c-database  { fill: rgba(76,29,149,.40); stroke: #a78bfa; }
+        .t-primary   { fill: #f8fafc; }
+        .t-muted     { fill: #94a3b8; }
+        .t-dim       { fill: #64748b; }
+        .a-default   { stroke: #64748b; }
+        .a-emphasis  { stroke: #34d399; }
+        .a-head-default  { fill: #64748b; }
+        .a-head-emphasis { fill: #34d399; }
+      }
+    </style>
+
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head-default"/>
+    </marker>
+    <marker id="ah-e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head-emphasis"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="704"/>
+
+  <text x="24" y="40" class="t-primary" font-size="20">erikwang2013/hashids-rust 架构设计</text>
+  <text x="24" y="62" class="t-muted" font-size="11">四层单向依赖：应用调用 → 框架适配（8 个）→ 框架无关内核 → 零依赖内核算法</text>
+
+  <!-- layer lanes -->
+  <rect class="lane" x="20" y="80"  width="1040" height="104" rx="10"/>
+  <rect class="lane" x="20" y="224" width="1040" height="132" rx="10"/>
+  <rect class="lane" x="20" y="396" width="1040" height="148" rx="10"/>
+  <rect class="lane" x="20" y="584" width="1040" height="100" rx="10"/>
+
+  <text class="lane-title" x="36" y="100">应用调用层 · APPLICATION</text>
+  <text class="lane-title" x="36" y="244">框架适配层 · ADAPTERS (src/integrations/)</text>
+  <text class="lane-title" x="36" y="416">核心层 · CORE（框架无关，零依赖）</text>
+  <text class="lane-title" x="36" y="604">内核算法 · KERNEL</text>
+
+  <!-- arrows (drawn before nodes so boxes paint over them) -->
+  <line class="a-emphasis" x1="540" y1="184" x2="540" y2="220" stroke-width="2" marker-end="url(#ah-e)"/>
+  <line class="a-emphasis" x1="540" y1="356" x2="540" y2="392" stroke-width="2" marker-end="url(#ah-e)"/>
+  <line class="a-emphasis" x1="540" y1="544" x2="540" y2="580" stroke-width="2" marker-end="url(#ah-e)"/>
+  <line class="a-default"  x1="260" y1="484" x2="326" y2="484" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line class="a-default"  x1="650" y1="484" x2="666" y2="484" stroke-width="1.5" marker-end="url(#ah)"/>
+  <line class="a-default"  x1="870" y1="484" x2="886" y2="484" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text class="t-dim" x="636" y="476" font-size="9" text-anchor="middle">make()</text>
+
+  <!-- L1 应用调用层 -->
+  <rect class="c-mask"     x="60"  y="118" width="260" height="56" rx="10"/>
+  <rect class="c-frontend" x="60"  y="118" width="260" height="56" rx="10"/>
+  <text class="t-primary" x="190" y="142" font-size="12" text-anchor="middle">guard.encode(&amp;[1, 2, 3])</text>
+  <text class="t-muted"   x="190" y="162" font-size="9"  text-anchor="middle">提取器（Axum / Actix / Rocket / Poem）</text>
+
+  <rect class="c-mask"     x="410" y="118" width="260" height="56" rx="10"/>
+  <rect class="c-frontend" x="410" y="118" width="260" height="56" rx="10"/>
+  <text class="t-primary" x="540" y="142" font-size="12" text-anchor="middle">depot.hashids() · Extension&lt;Guard&gt;</text>
+  <text class="t-muted"   x="540" y="162" font-size="9"  text-anchor="middle">Depot / 过滤器 / 扩展层（Salvo / Warp / e-cat）</text>
+
+  <rect class="c-mask"     x="760" y="118" width="260" height="56" rx="10"/>
+  <rect class="c-frontend" x="760" y="118" width="260" height="56" rx="10"/>
+  <text class="t-primary" x="890" y="142" font-size="12" text-anchor="middle">Guard::from_manager(Arc::new(m))</text>
+  <text class="t-muted"   x="890" y="162" font-size="9"  text-anchor="middle">原生守卫（不依赖任何框架）</text>
+
+  <!-- L2 框架适配层 -->
+  <rect class="c-mask"    x="41"  y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="41"  y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="99"  y="294" font-size="12" text-anchor="middle">Axum</text>
+  <text class="t-muted"   x="99"  y="316" font-size="8"  text-anchor="middle">FromRequestParts</text>
+  <text class="t-dim"     x="99"  y="336" font-size="7"  text-anchor="middle">FromRef 模式</text>
+
+  <rect class="c-mask"    x="167" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="167" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="225" y="294" font-size="12" text-anchor="middle">Actix Web</text>
+  <text class="t-muted"   x="225" y="316" font-size="8"  text-anchor="middle">FromRequest</text>
+  <text class="t-dim"     x="225" y="336" font-size="7"  text-anchor="middle">web::Data</text>
+
+  <rect class="c-mask"    x="293" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="293" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="351" y="294" font-size="12" text-anchor="middle">Rocket</text>
+  <text class="t-muted"   x="351" y="316" font-size="8"  text-anchor="middle">FromRequest</text>
+  <text class="t-dim"     x="351" y="336" font-size="7"  text-anchor="middle">请求守卫</text>
+
+  <rect class="c-mask"    x="419" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="419" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="477" y="294" font-size="12" text-anchor="middle">Poem</text>
+  <text class="t-muted"   x="477" y="316" font-size="8"  text-anchor="middle">FromRequest</text>
+  <text class="t-dim"     x="477" y="336" font-size="7"  text-anchor="middle">EndpointExt::data</text>
+
+  <rect class="c-mask"    x="545" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="545" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="603" y="294" font-size="12" text-anchor="middle">Salvo</text>
+  <text class="t-muted"   x="603" y="316" font-size="8"  text-anchor="middle">Depot 注入器</text>
+  <text class="t-dim"     x="603" y="336" font-size="7"  text-anchor="middle">hoop + DepotHashids</text>
+
+  <rect class="c-mask"    x="671" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="671" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="729" y="294" font-size="12" text-anchor="middle">Warp</text>
+  <text class="t-muted"   x="729" y="316" font-size="8"  text-anchor="middle">Filter 组合</text>
+  <text class="t-dim"     x="729" y="336" font-size="7"  text-anchor="middle">接线期解析</text>
+
+  <rect class="c-mask"    x="797" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="797" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="855" y="294" font-size="12" text-anchor="middle">Bee</text>
+  <text class="t-muted"   x="855" y="316" font-size="8"  text-anchor="middle">Filter 钩子</text>
+  <text class="t-dim"     x="855" y="336" font-size="7"  text-anchor="middle">底层即 axum</text>
+
+  <rect class="c-mask"    x="923" y="262" width="116" height="84" rx="10"/>
+  <rect class="c-backend" x="923" y="262" width="116" height="84" rx="10"/>
+  <text class="t-primary" x="981" y="294" font-size="12" text-anchor="middle">e-cat</text>
+  <text class="t-muted"   x="981" y="316" font-size="8"  text-anchor="middle">Extension 层</text>
+  <text class="t-dim"     x="981" y="336" font-size="7"  text-anchor="middle">HTTP 层即 axum</text>
+
+  <!-- L3 核心层 -->
+  <rect class="c-mask"  x="60"  y="434" width="200" height="100" rx="10"/>
+  <rect class="c-cloud" x="60"  y="434" width="200" height="100" rx="10"/>
+  <text class="t-primary" x="160" y="470" font-size="12" text-anchor="middle">配置</text>
+  <text class="t-muted"   x="160" y="494" font-size="9"  text-anchor="middle">Config / ConnectionConfig</text>
+  <text class="t-dim"     x="160" y="514" font-size="9"  text-anchor="middle">salt · min_hash_length · alphabet</text>
+
+  <rect class="c-mask"    x="330" y="434" width="320" height="100" rx="10"/>
+  <rect class="c-backend" x="330" y="434" width="320" height="100" rx="10"/>
+  <text class="t-primary" x="350" y="464" font-size="14">HashidsManager</text>
+  <text class="t-muted"   x="350" y="488" font-size="9">connection() · 懒构建 + Arc 缓存</text>
+  <text class="t-muted"   x="350" y="507" font-size="9">encode / decode · 代理到默认连接</text>
+  <text class="t-muted"   x="350" y="526" font-size="9">default 缺失或为空时回退 "main"</text>
+
+  <rect class="c-mask"    x="670" y="434" width="200" height="100" rx="10"/>
+  <rect class="c-backend" x="670" y="434" width="200" height="100" rx="10"/>
+  <text class="t-primary" x="690" y="464" font-size="14">Guard</text>
+  <text class="t-muted"   x="690" y="488" font-size="9">from_manager() · 快速失败</text>
+  <text class="t-muted"   x="690" y="507" font-size="9">encode / decode 不可失败</text>
+  <text class="t-muted"   x="690" y="526" font-size="9">Clone = 两次原子计数</text>
+
+  <rect class="c-mask"    x="890" y="434" width="130" height="100" rx="10"/>
+  <rect class="c-backend" x="890" y="434" width="130" height="100" rx="10"/>
+  <text class="t-primary" x="955" y="470" font-size="12" text-anchor="middle">HashidsFactory</text>
+  <text class="t-muted"   x="955" y="494" font-size="9"  text-anchor="middle">make()</text>
+  <text class="t-dim"     x="955" y="514" font-size="8"  text-anchor="middle">唯一构造点</text>
+
+  <!-- L4 内核算法 -->
+  <rect class="c-mask"     x="380" y="620" width="320" height="52" rx="10"/>
+  <rect class="c-database" x="380" y="620" width="320" height="52" rx="10"/>
+  <text class="t-primary" x="540" y="644" font-size="12" text-anchor="middle">src/hashids.rs · 原生实现 · 零依赖</text>
+  <text class="t-muted"   x="540" y="664" font-size="9"  text-anchor="middle">encode / decode / hex · 对齐官方测试向量</text>
+
+  <text class="t-dim" x="24" y="698" font-size="9">© 2026 erik · https://erik.xyz</text>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 660" role="img" aria-labelledby="lifeTitle lifeDesc">
+  <title id="lifeTitle">erikwang2013/hashids-rust lifecycle</title>
+  <desc id="lifeDesc">Three phases: the default connection is resolved once at build time, runtime costs nothing extra (lazy build + cache), and teardown has no external resources.</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .bg        { fill: #ffffff; }
+      .lane      { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .t-primary { fill: #0f172a; font-weight: 600; }
+      .t-muted   { fill: #475569; }
+      .t-dim     { fill: #94a3b8; }
+      .t-frontend { fill: #0891b2; font-weight: 600; }
+      .t-backend  { fill: #059669; font-weight: 600; }
+      .t-security { fill: #e11d48; font-weight: 600; }
+      .a-emphasis { stroke: #059669; fill: none; }
+      .a-head-emphasis { fill: #059669; }
+
+      @media (prefers-color-scheme: dark) {
+        .bg        { fill: #0b1220; }
+        .lane      { fill: #0f172a; stroke: #1e293b; }
+        .t-primary { fill: #f8fafc; }
+        .t-muted   { fill: #94a3b8; }
+        .t-dim     { fill: #64748b; }
+        .t-frontend { fill: #22d3ee; }
+        .t-backend  { fill: #34d399; }
+        .t-security { fill: #fb7185; }
+        .a-emphasis { stroke: #34d399; }
+        .a-head-emphasis { fill: #34d399; }
+      }
+    </style>
+
+    <marker id="ah-e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head-emphasis"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="660"/>
+
+  <text x="24" y="40" class="t-primary" font-size="20">Lifecycle</text>
+  <text x="24" y="62" class="t-muted" font-size="11">Resolved once at build time, zero extra cost at runtime, no external resources at teardown</text>
+
+  <!-- stage arrows -->
+  <line class="a-emphasis" x1="540" y1="240" x2="540" y2="268" stroke-width="2" marker-end="url(#ah-e)"/>
+  <line class="a-emphasis" x1="540" y1="424" x2="540" y2="452" stroke-width="2" marker-end="url(#ah-e)"/>
+
+  <!-- stage 1 BUILD -->
+  <rect class="lane" x="20" y="88" width="1040" height="152" rx="10"/>
+  <text class="t-frontend" x="44" y="124" font-size="14">Build</text>
+  <text class="t-muted" x="44" y="156" font-size="10">① cargo add hashids-rust (enable framework features as needed; zero deps by default)</text>
+  <text class="t-muted" x="44" y="180" font-size="10">② HashidsManager::new(config) — the configuration is snapshotted here and immutable afterwards</text>
+  <text class="t-muted" x="44" y="204" font-size="10">③ Arc::new(manager) goes into framework state; Warp / e-cat / Guard resolve the default connection here and fail fast</text>
+
+  <!-- stage 2 RUNTIME -->
+  <rect class="lane" x="20" y="272" width="1040" height="152" rx="10"/>
+  <text class="t-backend" x="44" y="308" font-size="14">Runtime</text>
+  <text class="t-muted" x="44" y="340" font-size="10">① Request arrives → Guard::clone() (two atomic increments)</text>
+  <text class="t-muted" x="44" y="364" font-size="10">② encode / decode → a cache hit reuses the connection, no rebuild</text>
+  <text class="t-muted" x="44" y="388" font-size="10">③ On a miss → HashidsFactory::make() builds and caches it → return short ID / original number</text>
+
+  <!-- stage 3 TEARDOWN -->
+  <rect class="lane" x="20" y="456" width="1040" height="152" rx="10"/>
+  <text class="t-security" x="44" y="492" font-size="14">Teardown</text>
+  <text class="t-muted" x="44" y="524" font-size="10">① Reclaimed on process exit; connections and the Guard are freed when Arc refcounts hit zero</text>
+  <text class="t-muted" x="44" y="548" font-size="10">② No external resources (no file / network handles), no cleanup hooks needed</text>
+  <text class="t-dim"   x="44" y="572" font-size="10">③ A long-running service switches configuration by rebuilding the Manager</text>
+
+  <text class="t-dim" x="24" y="640" font-size="9">© 2026 erik · https://erik.xyz</text>
+</svg>

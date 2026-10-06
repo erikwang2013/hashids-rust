@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 612" role="img" aria-labelledby="featTitle featDesc">
+  <title id="featTitle">erikwang2013/hashids-rust 功能设计</title>
+  <desc id="featDesc">六大能力分组：编解码 API、多连接管理、原生 Guard、八框架适配、快速失败、零依赖内核。</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .bg     { fill: #ffffff; }
+      .card   { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
+      .spine  { stroke: #cbd5e1; stroke-width: 1.5; fill: none; }
+      .t-primary { fill: #0f172a; font-weight: 600; }
+      .t-muted   { fill: #475569; }
+      .t-dim     { fill: #94a3b8; }
+      .t-frontend   { fill: #0891b2; font-weight: 600; }
+      .t-backend    { fill: #059669; font-weight: 600; }
+      .t-database   { fill: #7c3aed; font-weight: 600; }
+      .t-cloud      { fill: #d97706; font-weight: 600; }
+      .t-security   { fill: #e11d48; font-weight: 600; }
+      .t-messagebus { fill: #ea580c; font-weight: 600; }
+      .a-head { fill: #cbd5e1; }
+
+      @media (prefers-color-scheme: dark) {
+        .bg    { fill: #0b1220; }
+        .card  { fill: #0f172a; stroke: #1e293b; }
+        .spine { stroke: #334155; }
+        .t-primary { fill: #f8fafc; }
+        .t-muted   { fill: #94a3b8; }
+        .t-dim     { fill: #64748b; }
+        .t-frontend   { fill: #22d3ee; }
+        .t-backend    { fill: #34d399; }
+        .t-database   { fill: #a78bfa; }
+        .t-cloud      { fill: #fbbf24; }
+        .t-security   { fill: #fb7185; }
+        .t-messagebus { fill: #fb923c; }
+        .a-head { fill: #334155; }
+      }
+    </style>
+
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" class="a-head"/>
+    </marker>
+    <linearGradient id="rootGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1080" height="612"/>
+
+  <text x="24" y="40" class="t-primary" font-size="20">功能设计 · Feature Design</text>
+  <text x="24" y="62" class="t-muted" font-size="11">六大能力分组：内核零依赖、可脱离框架独立使用，适配层只负责把内核接进各框架的状态机制</text>
+
+  <!-- hub spine + spokes -->
+  <path class="spine" d="M540 164 V516"/>
+  <path class="spine" d="M540 256 H460" marker-end="url(#ah)"/>
+  <path class="spine" d="M540 386 H460" marker-end="url(#ah)"/>
+  <path class="spine" d="M540 516 H460" marker-end="url(#ah)"/>
+  <path class="spine" d="M540 256 H620" marker-end="url(#ah)"/>
+  <path class="spine" d="M540 386 H620" marker-end="url(#ah)"/>
+  <path class="spine" d="M540 516 H620" marker-end="url(#ah)"/>
+
+  <!-- hub -->
+  <rect x="440" y="88" width="200" height="76" rx="14" fill="url(#rootGrad)"/>
+  <text x="540" y="120" font-size="11" font-weight="700" fill="#0f172a" text-anchor="middle">erikwang2013/hashids-rust</text>
+  <text x="540" y="142" font-size="9" fill="rgba(15,23,42,.72)" text-anchor="middle">Rust 原生实现 · 多框架集成</text>
+
+  <!-- left column -->
+  <rect class="card" x="60" y="200" width="400" height="112" rx="12"/>
+  <text class="t-frontend" x="82" y="233" font-size="13">编解码 API</text>
+  <text class="t-muted" x="82" y="260" font-size="10">encode() / decode() / encode_hex() / decode_hex()</text>
+  <text class="t-muted" x="82" y="282" font-size="10">代理方法落到默认连接，无需显式 connection()</text>
+  <text class="t-dim"   x="82" y="302" font-size="10">空输入 / 非法输入返回空哨兵（对齐 PHP）</text>
+
+  <rect class="card" x="60" y="330" width="400" height="112" rx="12"/>
+  <text class="t-database" x="82" y="363" font-size="13">多连接管理</text>
+  <text class="t-muted" x="82" y="390" font-size="10">connection(Some("alternative")) 切换命名连接</text>
+  <text class="t-muted" x="82" y="412" font-size="10">RwLock 懒构建 + Arc 缓存，同一连接只建一次</text>
+  <text class="t-dim"   x="82" y="432" font-size="10">default 缺失或为空时回退 "main"</text>
+
+  <rect class="card" x="60" y="460" width="400" height="112" rx="12"/>
+  <text class="t-cloud" x="82" y="493" font-size="13">原生 Guard</text>
+  <text class="t-muted" x="82" y="520" font-size="10">Guard::from_manager(Arc) 接线期解析、快速失败</text>
+  <text class="t-muted" x="82" y="542" font-size="10">此后 encode / decode 不可失败</text>
+  <text class="t-dim"   x="82" y="562" font-size="10">Clone = 两次原子计数，适合每请求克隆</text>
+
+  <!-- right column -->
+  <rect class="card" x="620" y="200" width="400" height="112" rx="12"/>
+  <text class="t-backend" x="642" y="233" font-size="13">八框架适配</text>
+  <text class="t-muted" x="642" y="260" font-size="10">Axum / Actix Web / Rocket / Poem</text>
+  <text class="t-muted" x="642" y="282" font-size="10">Salvo / Warp / Bee / e-cat</text>
+  <text class="t-dim"   x="642" y="302" font-size="10">每框架一个 feature，默认不编译任何框架</text>
+
+  <rect class="card" x="620" y="330" width="400" height="112" rx="12"/>
+  <text class="t-security" x="642" y="363" font-size="13">快速失败</text>
+  <text class="t-muted" x="642" y="390" font-size="10">默认连接未配置：Warp / e-cat / Guard 接线期报错</text>
+  <text class="t-muted" x="642" y="412" font-size="10">其余框架在提取时返回 500</text>
+  <text class="t-dim"   x="642" y="432" font-size="10">配置错误不会静默降级</text>
+
+  <rect class="card" x="620" y="460" width="400" height="112" rx="12"/>
+  <text class="t-messagebus" x="642" y="493" font-size="13">零依赖内核</text>
+  <text class="t-muted" x="642" y="520" font-size="10">默认 feature 无任何第三方 crate（仅 std）</text>
+  <text class="t-muted" x="642" y="542" font-size="10">原生实现 hashids，数字范围 u64</text>
+  <text class="t-dim"   x="642" y="562" font-size="10">对齐 vinkla/hashids official test vectors</text>
+
+  <text class="t-dim" x="24" y="604" font-size="9">© 2026 erik · https://erik.xyz</text>
+</svg>

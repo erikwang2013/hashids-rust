@@ -5,6 +5,8 @@
 ![MSRV](https://img.shields.io/badge/MSRV-1.85-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+**Languages:** **中文** · [English](docs/i18n/en/README.md)
+
 <p align="center">
   <img src="./docs/mascot.svg" alt="哈希迪 Hashy — erikwang2013/hashids-rust 项目宠物" width="200" />
 </p>
@@ -69,6 +71,11 @@ hashids-rust/
 │   └── integrations/                # 八个框架各一个端到端用例
 ├── docs/
 │   ├── mascot.svg                   # 项目宠物「哈希迪 Hashy」
+│   ├── architecture.svg             # 架构设计图
+│   ├── features.svg                 # 功能设计图
+│   ├── request-cycle.svg            # 请求周期图
+│   ├── lifecycle.svg                # 生命周期图
+│   ├── i18n/en/                     # English README（含本地化图）
 │   ├── weixinpay.png · alipay.png   # 赞助二维码
 ├── .github/workflows/               # test / release
 ├── Cargo.toml
@@ -76,6 +83,8 @@ hashids-rust/
 ```
 
 ## 架构设计
+
+![架构设计](./docs/architecture.svg)
 
 **四层单向依赖**，上层依赖下层，反向不成立：
 
@@ -90,7 +99,9 @@ hashids-rust/
 
 ## 功能设计
 
-八个能力分组，全部围绕同一个内核：
+![功能设计](./docs/features.svg)
+
+六个能力分组，全部围绕同一个内核：
 
 - **编解码 API**：`encode()` / `decode()` / `encode_hex()` / `decode_hex()`，经代理方法落到默认连接，无需显式 `connection()`。
 - **多连接管理**：`connection(Some("alternative"))` 切换；懒加载构建，同一连接只构建一次。
@@ -99,7 +110,17 @@ hashids-rust/
 - **快速失败**：默认连接未配置时，Warp 在接线期报错、e-cat/Guard 在接线期报错、其余框架在提取时给出 500——配置错误不会静默降级。
 - **零依赖内核**：`HashidsManager::new(config)` 即可工作，默认 feature 不引入任何第三方 crate。
 
+## 请求周期
+
+![请求周期](./docs/request-cycle.svg)
+
+一次请求只做三件事：**取出 Guard**（提取器 / 守卫 / 过滤器 / hoop，默认连接已在接线期解析并缓存）→ **编解码**（`encode()` / `decode()` 落到默认连接）→ **返回**短 ID 或原数字。某个连接首次被用到时，才会经 `HashidsFactory::make()` 构建并写入缓存。
+
+默认连接未配置时不会静默降级：Warp / e-cat / Guard 在接线期直接报错（启动即失败），其余框架在提取时返回 500；而编解码自身的非法输入按 PHP 语义返回空哨兵——两类失败互不混淆。
+
 ## 生命周期
+
+![生命周期](./docs/lifecycle.svg)
 
 | 阶段 | 发生了什么 |
 |------|-----------|
@@ -432,3 +453,5 @@ println!("{}", mascot::greet());
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+© 2026 erik · https://erik.xyz
