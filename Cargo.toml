@@ -1,0 +1,91 @@
+[package]
+name = "hashids-rust"
+version = "1.0.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Hashids for Rust: native implementation plus multi-framework integration (Axum, Actix Web, Rocket, Poem, Salvo, Warp, Bee, e-cat), API aligned with vinkla/hashids (multi-connection Manager + Factory)."
+license = "MIT"
+authors = ["erik <erik@erik.xyz>"]
+repository = "https://github.com/erikwang2013/hashids-rust"
+readme = "README.md"
+keywords = ["hashids", "ids", "obfuscation", "web", "axum"]
+categories = ["encoding", "web-programming"]
+
+[lib]
+name = "hashids"
+path = "src/lib.rs"
+
+[features]
+default = []
+axum = ["dep:axum"]
+actix = ["dep:actix-web"]
+rocket = ["dep:rocket"]
+poem = ["dep:poem"]
+salvo = ["dep:salvo"]
+warp = ["dep:warp"]
+bee = ["dep:bee_router", "axum"]
+ecat = ["axum"]
+
+[dependencies]
+axum = { version = "0.8.9", optional = true, default-features = false }
+actix-web = { version = "4.15", optional = true, default-features = false }
+rocket = { version = "0.5.1", optional = true, default-features = false }
+poem = { version = "3.1.12", optional = true, default-features = false }
+salvo = { version = "1.0.1", optional = true, default-features = false }
+warp = { version = "0.4.3", optional = true, default-features = false }
+bee_router = { version = "1.2.3", optional = true, default-features = false }
+
+[dev-dependencies]
+tokio = { version = "1.53", features = ["macros", "rt-multi-thread"] }
+tower = { version = "0.5.3", features = ["util"] }
+axum = "0.8.9"
+actix-web = "4.15"
+rocket = "0.5.1"
+poem = { version = "3.1.12", features = ["test"] }
+salvo = { version = "1.0.1", features = ["test"] }
+warp = { version = "0.4.3", features = ["test"] }
+bee_router = "1.2.3"
+bee_cache = "1.2.3"
+bee_session = "1.2.3"
+bee_template = "1.2.3"
+async-trait = "0.1"
+
+[[test]]
+name = "integration_axum"
+path = "tests/integrations/axum.rs"
+required-features = ["axum"]
+
+[[test]]
+name = "integration_actix"
+path = "tests/integrations/actix.rs"
+required-features = ["actix"]
+
+[[test]]
+name = "integration_rocket"
+path = "tests/integrations/rocket.rs"
+required-features = ["rocket"]
+
+[[test]]
+name = "integration_poem"
+path = "tests/integrations/poem.rs"
+required-features = ["poem"]
+
+[[test]]
+name = "integration_salvo"
+path = "tests/integrations/salvo.rs"
+required-features = ["salvo"]
+
+[[test]]
+name = "integration_warp"
+path = "tests/integrations/warp.rs"
+required-features = ["warp"]
+
+[[test]]
+name = "integration_bee"
+path = "tests/integrations/bee.rs"
+required-features = ["bee"]
+
+[[test]]
+name = "integration_ecat"
+path = "tests/integrations/ecat.rs"
+required-features = ["ecat"]

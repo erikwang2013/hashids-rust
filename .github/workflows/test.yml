@@ -1,0 +1,50 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy（全部 feature，告警即失败）
+        run: cargo clippy --all-features --all-targets -- -D warnings
+
+      - name: Test（全部 feature：官方向量 + 八框架集成 + doctest）
+        run: cargo test --all-features
+
+      - name: Test（默认 feature：零依赖内核）
+        run: cargo test --no-default-features
+
+  msrv:
+    name: MSRV 1.85（零依赖内核）
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rust 1.85
+        uses: dtolnay/rust-toolchain@1.85
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check 零依赖内核
+        run: cargo check --no-default-features

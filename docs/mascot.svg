@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 250" role="img" aria-labelledby="mascotTitle mascotDesc">
+  <title id="mascotTitle">哈希迪 Hashy — erikwang2013/hashids 项目宠物</title>
+  <desc id="mascotDesc">一只圆角方块造型的蓝绿色小宠物，头顶天线，胸前有井号徽记，身旁气泡显示编码结果 3kTMd。</desc>
+
+  <defs>
+    <style>
+      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      .m-shadow { fill: rgba(15,23,42,.12); }
+      .m-accent { color: #0891b2; }
+      .m-panel  { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; }
+      .m-cheek  { fill: rgba(255,255,255,.42); }
+      .m-ink    { stroke: rgba(15,23,42,.78); }
+      .m-id     { fill: #0891b2; }
+
+      @media (prefers-color-scheme: dark) {
+        .m-shadow { fill: rgba(0,0,0,.45); }
+        .m-accent { color: #22d3ee; }
+        .m-panel  { fill: #0f172a; stroke: #1e293b; }
+        .m-cheek  { fill: rgba(255,255,255,.32); }
+        .m-ink    { stroke: rgba(15,23,42,.82); }
+        .m-id     { fill: #22d3ee; }
+      }
+    </style>
+
+    <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse class="m-shadow" cx="110" cy="226" rx="58" ry="10"/>
+
+  <!-- antenna -->
+  <g class="m-accent" stroke="currentColor" fill="currentColor">
+    <line x1="110" y1="66" x2="110" y2="46" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="110" cy="40" r="7" stroke="none"/>
+  </g>
+
+  <!-- feet (drawn before the body so the body hides their top edge) -->
+  <rect x="76"  y="200" width="28" height="16" rx="8" fill="#22d3ee"/>
+  <rect x="116" y="200" width="28" height="16" rx="8" fill="#34d399"/>
+
+  <!-- arms -->
+  <path d="M58 134 Q42 140 40 152"   fill="none" stroke="#22d3ee" stroke-width="5" stroke-linecap="round"/>
+  <path d="M162 134 Q178 140 180 152" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- body -->
+  <rect x="56" y="64" width="108" height="140" rx="38" fill="url(#bodyGrad)" stroke="rgba(15,23,42,.08)" stroke-width="1.5"/>
+
+  <!-- eyes -->
+  <ellipse cx="91"  cy="110" rx="14" ry="15" fill="#ffffff"/>
+  <ellipse cx="129" cy="110" rx="14" ry="15" fill="#ffffff"/>
+  <circle cx="93"  cy="113" r="7" fill="#0f172a"/>
+  <circle cx="131" cy="113" r="7" fill="#0f172a"/>
+  <circle cx="90"  cy="109" r="2.6" fill="#ffffff"/>
+  <circle cx="128" cy="109" r="2.6" fill="#ffffff"/>
+
+  <!-- cheeks -->
+  <circle class="m-cheek" cx="70"  cy="132" r="5.5"/>
+  <circle class="m-cheek" cx="150" cy="132" r="5.5"/>
+
+  <!-- smile -->
+  <path class="m-ink" d="M95 136 Q110 149 125 136" fill="none" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- hash emblem on the chest -->
+  <g stroke="rgba(255,255,255,.6)" stroke-width="5.5" stroke-linecap="round">
+    <line x1="96"  y1="164" x2="96"  y2="188"/>
+    <line x1="124" y1="164" x2="124" y2="188"/>
+    <line x1="88"  y1="169" x2="132" y2="169"/>
+    <line x1="88"  y1="183" x2="132" y2="183"/>
+  </g>
+
+  <!-- speech bubble: an encoded short id -->
+  <path class="m-panel" d="M190 98 L168 132 L208 106 Z"/>
+  <rect class="m-panel" x="186" y="64" width="82" height="48" rx="14"/>
+  <text class="m-id" x="227" y="95" text-anchor="middle" font-size="17" font-weight="600">3kTMd</text>
+</svg>
