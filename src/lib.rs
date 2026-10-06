@@ -23,6 +23,7 @@
 //! 未适配的框架/场景可以直接用 [`Guard`]（原生请求守卫）：把它放进任意框架的
 //! 应用状态，每请求克隆即可。
 #![forbid(unsafe_code)]
+#![warn(missing_docs)]
 
 pub mod config;
 pub mod error;

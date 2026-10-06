@@ -33,6 +33,7 @@ pub struct HashidsFilter {
 }
 
 impl HashidsFilter {
+    /// 用给定守卫创建过滤器。
     pub fn new(guard: Guard) -> Self {
         Self { guard }
     }
@@ -47,6 +48,7 @@ impl Filter for HashidsFilter {
 
 /// `Context` 扩展：取回注入的 [`Guard`]。
 pub trait ContextHashids {
+    /// 取回注入的 [`Guard`]；未挂载过滤器时返回 `None`。
     fn hashids(&self) -> Option<Guard>;
 }
 

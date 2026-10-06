@@ -7,6 +7,7 @@ description = "Hashids for Rust: native implementation plus multi-framework inte
 license = "MIT"
 authors = ["erik <erik@erik.xyz>"]
 repository = "https://github.com/erikwang2013/hashids-rust"
+homepage = "https://erik.xyz"
 readme = "README.md"
 keywords = ["hashids", "ids", "obfuscation", "web", "axum"]
 categories = ["encoding", "web-programming"]

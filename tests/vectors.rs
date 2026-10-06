@@ -265,6 +265,7 @@ fn bad_input_returns_sentinels() {
     assert_eq!(hashids.encode(&[]), "");
     assert_eq!(hashids.decode(""), Vec::<u64>::new());
     assert_eq!(hashids.decode("f"), Vec::<u64>::new());
+    assert_eq!(hashids.decode("0"), Vec::<u64>::new()); // PHP 的 falsy 语义等价
     assert_eq!(hashids.encode_hex("z"), "");
     assert_eq!(hashids.encode_hex(""), "");
     assert_eq!(hashids.decode_hex("f"), "");

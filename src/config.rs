@@ -17,6 +17,7 @@ pub struct ConnectionConfig {
 }
 
 impl ConnectionConfig {
+    /// 创建空配置（等价 `Default`）。
     pub fn new() -> Self {
         Self::default()
     }
@@ -52,6 +53,7 @@ pub struct Config {
 }
 
 impl Config {
+    /// 创建空配置（等价 `Default`）。
     pub fn new() -> Self {
         Self::default()
     }

@@ -40,6 +40,7 @@ pub struct HashidsInjector {
 }
 
 impl HashidsInjector {
+    /// 创建注入器；每请求解析默认连接并注入 Depot。
     pub fn new(manager: Arc<HashidsManager>) -> Self {
         Self { manager }
     }
@@ -70,6 +71,7 @@ impl Handler for HashidsInjector {
 
 /// Depot 扩展：取默认连接的守卫。
 pub trait DepotHashids {
+    /// 取默认连接的守卫；未注入时返回 500（internal server error）。
     fn hashids(&self) -> Result<Hashids, StatusError>;
 }
 

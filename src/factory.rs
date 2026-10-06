@@ -9,6 +9,7 @@ use crate::hashids::{DEFAULT_ALPHABET, Hashids};
 pub struct HashidsFactory;
 
 impl HashidsFactory {
+    /// 创建工厂（零大小类型）。
     pub fn new() -> Self {
         Self
     }
