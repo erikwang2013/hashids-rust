@@ -2,6 +2,8 @@
 
 [![Test](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml/badge.svg)](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml)
 [![Release](https://img.shields.io/github/v/release/erikwang2013/hashids-rust)](https://github.com/erikwang2013/hashids-rust/releases)
+[![crates.io](https://img.shields.io/crates/v/hashids-rust)](https://crates.io/crates/hashids-rust)
+[![docs.rs](https://docs.rs/hashids-rust/badge.svg)](https://docs.rs/hashids-rust)
 ![MSRV](https://img.shields.io/badge/MSRV-1.85-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -132,17 +134,15 @@ hashids-rust/
 
 ## 安装
 
-尚未发布到 crates.io；当前从 GitHub 安装，锁定 `v1.0.0`：
-
 ```bash
-cargo add hashids-rust --git https://github.com/erikwang2013/hashids-rust --tag v1.0.0
+cargo add hashids-rust
 ```
 
-或直接写进 `Cargo.toml`：
+或写进 `Cargo.toml`（锁定主版本）：
 
 ```toml
 [dependencies]
-hashids-rust = { git = "https://github.com/erikwang2013/hashids-rust", tag = "v1.0.0" }
+hashids-rust = "1.0"
 ```
 
 按需开启框架适配（默认不编译任何框架）：

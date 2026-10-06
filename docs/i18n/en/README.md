@@ -2,6 +2,8 @@
 
 [![Test](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml/badge.svg)](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml)
 [![Release](https://img.shields.io/github/v/release/erikwang2013/hashids-rust)](https://github.com/erikwang2013/hashids-rust/releases)
+[![crates.io](https://img.shields.io/crates/v/hashids-rust)](https://crates.io/crates/hashids-rust)
+[![docs.rs](https://docs.rs/hashids-rust/badge.svg)](https://docs.rs/hashids-rust)
 ![MSRV](https://img.shields.io/badge/MSRV-1.85-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](../../../LICENSE)
 
@@ -132,17 +134,15 @@ Connections are built **on demand**: a process that only calls the default conne
 
 ## Installation
 
-Not published to crates.io yet; install from GitHub for now, pinned to `v1.0.0`:
-
 ```bash
-cargo add hashids-rust --git https://github.com/erikwang2013/hashids-rust --tag v1.0.0
+cargo add hashids-rust
 ```
 
-Or write it straight into `Cargo.toml`:
+Or write it straight into `Cargo.toml` (pinning the major version):
 
 ```toml
 [dependencies]
-hashids-rust = { git = "https://github.com/erikwang2013/hashids-rust", tag = "v1.0.0" }
+hashids-rust = "1.0"
 ```
 
 Enable framework adapters as needed (none are compiled by default):
