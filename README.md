@@ -67,6 +67,8 @@ hashids-rust/
 │       ├── axum.rs · actix.rs · rocket.rs · poem.rs
 │       ├── salvo.rs · warp.rs
 │       └── bee.rs（bee-rust）· ecat.rs（e-cat，底层即 axum）
+├── examples/
+│   └── mascot.rs                    # cargo run --example mascot 打印宠物问候
 ├── tests/
 │   ├── vectors.rs                   # 官方测试向量（vinkla/hashids 全量转写）
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
@@ -77,6 +79,7 @@ hashids-rust/
 │   ├── features.svg                 # 功能设计图
 │   ├── request-cycle.svg            # 请求周期图
 │   ├── lifecycle.svg                # 生命周期图
+│   ├── social-preview.svg/.png      # GitHub 仓库社交预览（上传到仓库设置用）
 │   ├── i18n/en/                     # English README（含本地化图）
 │   ├── weixinpay.png · alipay.png   # 赞助二维码
 ├── .github/workflows/               # test / release
@@ -422,6 +425,12 @@ let router: Router = Router::new()
 use hashids::mascot;
 
 println!("{}", mascot::greet());
+```
+
+也可以直接跑示例：
+
+```bash
+cargo run --example mascot
 ```
 
 ```

@@ -67,6 +67,8 @@ hashids-rust/
 │       ├── axum.rs · actix.rs · rocket.rs · poem.rs
 │       ├── salvo.rs · warp.rs
 │       └── bee.rs (bee-rust) · ecat.rs (e-cat, backed by axum)
+├── examples/
+│   └── mascot.rs                    # cargo run --example mascot prints the mascot greeting
 ├── tests/
 │   ├── vectors.rs                   # official test vectors (full transcription of vinkla/hashids)
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
@@ -77,7 +79,8 @@ hashids-rust/
 │   ├── features.svg                 # feature design diagram
 │   ├── request-cycle.svg            # request cycle diagram
 │   ├── lifecycle.svg                # lifecycle diagram
-│   ├── i18n/                        # 12-language READMEs (each with localized diagrams)
+│   ├── social-preview.svg/.png      # GitHub social preview (for repo settings)
+│   ├── i18n/en/                     # English README (with localized diagrams)
 │   ├── weixinpay.png · alipay.png   # sponsorship QR codes
 ├── .github/workflows/               # test / release
 ├── Cargo.toml
@@ -422,6 +425,12 @@ There is no SVG in a terminal, so the code ships an equivalent ASCII version (`h
 use hashids::mascot;
 
 println!("{}", mascot::greet());
+```
+
+Or just run the example:
+
+```bash
+cargo run --example mascot
 ```
 
 ```

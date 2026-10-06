@@ -1,5 +1,20 @@
 //! **Hashids for Rust** —— 把数据库自增 ID 换成短小、不可猜测的字符串。
 //!
+//! ```text
+//!            ●
+//!            │
+//!       ╭─────────╮
+//!       │ ◉     ◉ │
+//!       │    ‿    │
+//!       │    #    │
+//!       ╰──┬───┬──╯
+//!          ╵   ╵
+//! 哈希迪 Hashy · 把数据库自增 ID 换成短小、不可猜测的字符串
+//! ```
+//!
+//! 上面是项目宠物「哈希迪 Hashy」的 ASCII 版，它就住在 [`mascot`] 模块里：
+//! `mascot::greet()` 可直接打印问候，`cargo run --example mascot` 是同款示例。
+//!
 //! 内核原生实现 hashids 算法（对齐 [vinkla/hashids](https://github.com/vinkla/hashids)
 //! 官方测试向量），配置与用法对齐其「多连接 + 默认连接 + Manager + Factory」风格；
 //! 默认**零依赖**，八个 Web 框架适配（Axum / Actix Web / Rocket / Poem / Salvo /
