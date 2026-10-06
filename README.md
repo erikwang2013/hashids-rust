@@ -1,5 +1,10 @@
 # erikwang2013/hashids-rust
 
+[![Test](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml/badge.svg)](https://github.com/erikwang2013/hashids-rust/actions/workflows/test.yml)
+[![Release](https://img.shields.io/github/v/release/erikwang2013/hashids-rust)](https://github.com/erikwang2013/hashids-rust/releases)
+![MSRV](https://img.shields.io/badge/MSRV-1.85-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 <p align="center">
   <img src="./docs/mascot.svg" alt="哈希迪 Hashy — erikwang2013/hashids-rust 项目宠物" width="200" />
 </p>
@@ -98,7 +103,7 @@ hashids-rust/
 
 | 阶段 | 发生了什么 |
 |------|-----------|
-| **构建期** | `cargo add hashids-rust`（按需开启框架 feature）→ 启动时 `HashidsManager::new(config)` → 包进 `Arc` 放进框架状态；Warp / e-cat / Guard 在此解析默认连接、快速失败 |
+| **构建期** | 安装 `hashids-rust` 并开启所需框架 feature → 启动时 `HashidsManager::new(config)` → 包进 `Arc` 放进框架状态；Warp / e-cat / Guard 在此解析默认连接、快速失败 |
 | **运行期** | 请求 → 提取器/守卫/过滤器取出 `Guard` → `encode()` / `decode()` → **连接命中缓存直接复用，未命中才 `HashidsFactory::make()` 构建并写入缓存** → 返回短 ID 或原数字 |
 | **释放期** | 随进程退出回收；无外部资源需要清理 |
 
@@ -106,8 +111,17 @@ hashids-rust/
 
 ## 安装
 
+尚未发布到 crates.io；当前从 GitHub 安装，锁定 `v1.0.0`：
+
 ```bash
-cargo add hashids-rust
+cargo add hashids-rust --git https://github.com/erikwang2013/hashids-rust --tag v1.0.0
+```
+
+或直接写进 `Cargo.toml`：
+
+```toml
+[dependencies]
+hashids-rust = { git = "https://github.com/erikwang2013/hashids-rust", tag = "v1.0.0" }
 ```
 
 按需开启框架适配（默认不编译任何框架）：
