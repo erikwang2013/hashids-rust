@@ -15,18 +15,26 @@
 //! | `ecat`  | ecat 4 | axum `Extension` 层（e-cat 的 HTTP 传输就是 axum Router） |
 
 #[cfg(feature = "actix")]
+#[cfg_attr(docsrs, doc(cfg(feature = "actix")))]
 pub mod actix;
 #[cfg(feature = "axum")]
+#[cfg_attr(docsrs, doc(cfg(feature = "axum")))]
 pub mod axum;
 #[cfg(feature = "bee")]
+#[cfg_attr(docsrs, doc(cfg(feature = "bee")))]
 pub mod bee;
 #[cfg(feature = "ecat")]
+#[cfg_attr(docsrs, doc(cfg(feature = "ecat")))]
 pub mod ecat;
 #[cfg(feature = "poem")]
+#[cfg_attr(docsrs, doc(cfg(feature = "poem")))]
 pub mod poem;
 #[cfg(feature = "rocket")]
+#[cfg_attr(docsrs, doc(cfg(feature = "rocket")))]
 pub mod rocket;
 #[cfg(feature = "salvo")]
+#[cfg_attr(docsrs, doc(cfg(feature = "salvo")))]
 pub mod salvo;
 #[cfg(feature = "warp")]
+#[cfg_attr(docsrs, doc(cfg(feature = "warp")))]
 pub mod warp;

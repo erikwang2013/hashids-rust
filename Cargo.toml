@@ -16,6 +16,12 @@ categories = ["encoding", "web-programming"]
 name = "hashids"
 path = "src/lib.rs"
 
+# docs.rs 默认按默认 feature 构建，适配器模块会被 cfg 掉；开启全 feature 让
+# 八个框架适配器的 API 都出现在文档里。
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [features]
 default = []
 axum = ["dep:axum"]

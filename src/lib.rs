@@ -39,6 +39,7 @@
 //! 应用状态，每请求克隆即可。
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub mod config;
 pub mod error;
