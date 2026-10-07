@@ -10,3 +10,7 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    ignore:
+      # dtolnay/rust-toolchain@1.85 / @1.94 是 MSRV 钉版（语义化 Rust 版本），
+      # 不是 action 版本，不随 dependabot 升级。
+      - dependency-name: "dtolnay/rust-toolchain"
