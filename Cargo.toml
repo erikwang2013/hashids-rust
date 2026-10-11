@@ -3,7 +3,7 @@ name = "hashids-rust"
 version = "1.0.10"
 edition = "2024"
 rust-version = "1.85"
-description = "Hashids for Rust: native implementation plus multi-framework integration (Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, e-cat), API aligned with vinkla/hashids (multi-connection Manager + Factory)."
+description = "Hashids for Rust: native implementation plus multi-framework integration (Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, e-cat), with a multi-connection Manager + Factory API."
 license = "MIT"
 authors = ["erik <erik@erik.xyz>"]
 repository = "https://github.com/erikwang2013/hashids-rust"
@@ -30,8 +30,16 @@ rocket = ["dep:rocket"]
 poem = ["dep:poem"]
 salvo = ["dep:salvo"]
 warp = ["dep:warp"]
+# bee 的 handler 就是 axum handler（bee_router 1.x 底层为 axum 0.8），故启用
+# bee 必同时启用本 crate 的 axum feature。耦合前提：bee_router 将来升 axum
+# 大版本而本 crate 可选 axum 仍钉旧版时，启用 bee 会同时编两份 axum。
 bee = ["dep:bee_router", "axum"]
 ecat = ["axum"]
+
+[lints.rust]
+# 原先写在 src/lib.rs 的 crate 属性，挪到这里以覆盖全部 target（tests/examples）。
+unsafe_code = "forbid"
+missing_docs = "warn"
 
 [dependencies]
 axum = { version = "0.8.9", optional = true, default-features = false }

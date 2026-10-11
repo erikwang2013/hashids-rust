@@ -35,6 +35,7 @@ pub struct Hashids(pub Guard);
 
 /// 注入器：挂到 Router 上（`.hoop(HashidsInjector::new(manager))`），
 /// 每个请求把默认连接的 [`Guard`] 注入 Depot。
+#[derive(Debug)]
 pub struct HashidsInjector {
     manager: Arc<HashidsManager>,
 }

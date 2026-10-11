@@ -20,6 +20,13 @@ pub struct Guard {
 
 impl Guard {
     /// 解析默认连接并守卫之；默认连接未配置时返回错误（接线期快速失败）。
+    ///
+    /// # Errors
+    ///
+    /// 默认连接解析失败时返回 [`Error`]：
+    /// 未配置（[`Error::ConnectionNotConfigured`]）、名称为空
+    /// （[`Error::EmptyConnectionName`]），或字母表非法
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
     pub fn from_manager(manager: Arc<HashidsManager>) -> Result<Self, Error> {
         let default = manager.connection(None)?;
         Ok(Self { manager, default })
@@ -36,6 +43,13 @@ impl Guard {
     }
 
     /// 切换到命名连接（默认连接之外的连接按需构建并缓存）。
+    ///
+    /// # Errors
+    ///
+    /// 连接解析失败时返回 [`Error`]：
+    /// `name` 为空（[`Error::EmptyConnectionName`]）、未配置
+    /// （[`Error::ConnectionNotConfigured`]），或字母表非法
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
     pub fn connection(&self, name: &str) -> Result<Arc<Hashids>, Error> {
         self.manager.connection(Some(name))
     }

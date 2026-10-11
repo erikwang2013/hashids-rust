@@ -28,6 +28,7 @@ use bee_router::{Context, Filter};
 use crate::Guard;
 
 /// bee 原生 Filter：把 [`Guard`] 注入每个请求的 `Context`。
+#[derive(Debug)]
 pub struct HashidsFilter {
     guard: Guard,
 }
