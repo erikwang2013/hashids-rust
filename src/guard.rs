@@ -26,7 +26,8 @@ impl Guard {
     /// 默认连接解析失败时返回 [`Error`]：
     /// 未配置（[`Error::ConnectionNotConfigured`]）、名称为空
     /// （[`Error::EmptyConnectionName`]），或字母表非法
-    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]
+    /// / [`Error::AlphabetWithNul`]）。
     pub fn from_manager(manager: Arc<HashidsManager>) -> Result<Self, Error> {
         let default = manager.connection(None)?;
         Ok(Self { manager, default })
@@ -49,7 +50,8 @@ impl Guard {
     /// 连接解析失败时返回 [`Error`]：
     /// `name` 为空（[`Error::EmptyConnectionName`]）、未配置
     /// （[`Error::ConnectionNotConfigured`]），或字母表非法
-    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]
+    /// / [`Error::AlphabetWithNul`]）。
     pub fn connection(&self, name: &str) -> Result<Arc<Hashids>, Error> {
         self.manager.connection(Some(name))
     }

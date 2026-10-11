@@ -20,8 +20,9 @@ impl HashidsFactory {
     /// # Errors
     ///
     /// 仅当配置了自定义字母表且其非法时返回 [`Error`]：
-    /// 去重后不足 16 个唯一字符（[`Error::AlphabetTooShort`]）
-    /// 或包含空格（[`Error::AlphabetWithSpace`]）。
+    /// 去重后不足 16 个唯一字符（[`Error::AlphabetTooShort`]）、
+    /// 包含空格（[`Error::AlphabetWithSpace`]），或包含 NUL 字符
+    /// （[`Error::AlphabetWithNul`]）。
     pub fn make(&self, config: &ConnectionConfig) -> Result<Hashids, Error> {
         match config.alphabet.as_deref() {
             Some(alphabet) if !alphabet.is_empty() => {

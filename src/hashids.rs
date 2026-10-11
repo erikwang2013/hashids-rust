@@ -55,7 +55,6 @@ impl Hashids {
     /// - [`Error::AlphabetTooShort`]：去重后不足 16 个唯一字符；
     /// - [`Error::AlphabetWithSpace`]：字母表含空格；
     /// - [`Error::AlphabetWithNul`]：字母表含 NUL 字符（内部取模会除零）。
-    #[must_use]
     pub fn new(salt: &str, min_hash_length: usize, alphabet: &str) -> Result<Self, Error> {
         let mut alphabet = dedup_chars(alphabet);
         if alphabet.len() < 16 {

@@ -68,7 +68,8 @@ impl HashidsManager {
     /// 连接解析失败时返回 [`Error`]：
     /// 连接名为空（[`Error::EmptyConnectionName`]）、未在配置中登记
     /// （[`Error::ConnectionNotConfigured`]），或字母表非法
-    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]
+    /// / [`Error::AlphabetWithNul`]）。
     pub fn connection(&self, name: Option<&str>) -> Result<Arc<Hashids>, Error> {
         let name = name.unwrap_or_else(|| self.default_connection());
         if name.is_empty() {
