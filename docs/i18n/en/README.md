@@ -17,20 +17,20 @@
 
 Turn database auto-increment IDs into short, unguessable strings, with **a single API running on Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, and e-cat at the same time**.
 
-The kernel implements the hashids algorithm natively (aligned with the official test vectors of [vinkla/hashids](https://github.com/vinkla/hashids)); configuration and usage follow [**vinkla/hashids**](https://github.com/vinkla/laravel-hashids) (multiple connections, default connection, `HashidsManager` + factory), so migration cost is low. With default features, **zero third-party dependencies**.
+The kernel is a native implementation of the hashids algorithm, consistent with the official hashids test vectors; typed configuration (multiple connections, default connection, `HashidsManager` + factory) works out of the box. With default features, **zero third-party dependencies**.
 
 ## About
 
 **Hashids** is a short ID generator that encodes numeric IDs (such as database primary keys) into short, unique, unguessable strings. Unlike UUIDs or Snowflake IDs, Hashids fits user-facing scenarios better (URLs, share codes, order numbers, and so on): it keeps the output short and readable while hiding the original number.
 
-This package, `erikwang2013/hashids-rust`, is a **native Rust implementation of Hashids with a multi-framework integration layer**. Its design references and aligns with the API style of [vinkla/hashids](https://github.com/vinkla/laravel-hashids) (multiple connections, default connection, Manager + Factory pattern), and adapts the web frameworks commonly used in the Rust ecosystem.
+This package, `erikwang2013/hashids-rust`, is a **native Rust implementation of Hashids with a multi-framework integration layer**. It offers a typed API in the multi-connection, default-connection, Manager + Factory style, and adapts the web frameworks commonly used in the Rust ecosystem.
 
 **Core features:**
 
-- **Multi-framework compatibility**: the same API supports Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, and e-cat; for frameworks without an adapter, the native `Guard` is enough to integrate — migration cost is minimal.
-- **Multiple connections**: one application can configure several salt/length combinations at once (e.g. different salts for user IDs and order IDs), switched via `connection(Some("xxx"))`.
+- **Multi-framework compatibility**: the same API supports Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, and e-cat; for frameworks without an adapter, the native `Guard` is enough to integrate — integration cost is minimal.
+- **Multiple connections**: one application can configure several salt / min_hash_length combinations at once (e.g. different salts for user IDs and order IDs), switched via `connection(Some("xxx"))`.
 - **No framework dependency**: usable standalone without depending on any particular framework — `HashidsManager::new(config)` just works; with default features, zero third-party dependencies.
-- **Aligned with vinkla/hashids**: `Config`, connection configuration (`salt` / `min_hash_length` / `alphabet`), and the structure of `HashidsManager` + `HashidsFactory` match vinkla/hashids, so semantics migrate smoothly.
+- **Typed configuration**: `Config` and connection configuration (`salt` / `min_hash_length` / `alphabet`) are typed structs, and `HashidsManager` + `HashidsFactory` each have a clear role out of the box.
 - **Framework-native style**: each integration follows its framework's idioms — Axum uses extractors, Actix Web uses `FromRequest`, Rocket uses request guards, Poem uses extractors, Salvo uses a Depot injector, Warp uses Filters, bee-rust uses native Filter hooks, and e-cat uses an Extension layer.
 
 **Use cases:**
@@ -48,7 +48,7 @@ This package, `erikwang2013/hashids-rust`, is a **native Rust implementation of 
 - Once in production, changing the salt or length invalidates every ID already encoded — plan ahead and freeze the configuration.
 - **An empty salt means no protection**: with an empty salt the encoding is enumerable (`encode(1)`, `encode(2)`, … in a predictable order). An empty salt neither errors nor warns; it degrades silently — confirm the salt is set before shipping.
 - **Configuration is snapshotted at construction**: `HashidsManager` configuration is fixed once constructed (`set_default_connection` must also be called before wrapping it in an `Arc`); changing configuration requires rebuilding the Manager — likewise for long-running services, the change takes effect after a rebuild.
-- **Numeric range is `u64`**: the arbitrary precision of the PHP version's bcmath/gmp is not replicated; the official test vectors (including `u64::MAX`) all fit within `u64`, losslessly.
+- **Numeric range is `u64`** (including `u64::MAX`, losslessly): hashes beyond `u64` are rejected as invalid input (returning an empty array).
 
 ## Project Structure
 
@@ -58,7 +58,7 @@ hashids-rust/
 │   ├── lib.rs                       # crate docs and re-exports
 │   ├── hashids.rs                   # core algorithm: encode/decode/encode_hex/decode_hex
 │   ├── config.rs                    # Config / ConnectionConfig (default + connections)
-│   ├── error.rs                     # Error (mirrors the PHP version's error semantics and messages)
+│   ├── error.rs                     # Error: invalid input and alphabet validation
 │   ├── factory.rs                   # HashidsFactory: the single construction point
 │   ├── manager.rs                   # core: multi-connection resolution, instance cache, default-connection proxy
 │   ├── guard.rs                     # native Guard (request guard): a framework-free entry point
@@ -70,7 +70,7 @@ hashids-rust/
 ├── examples/
 │   └── mascot.rs                    # cargo run --example mascot prints the mascot greeting
 ├── tests/
-│   ├── vectors.rs                   # official test vectors (full transcription of vinkla/hashids)
+│   ├── vectors.rs                   # the full official hashids test vectors
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
 │   └── integrations/                # one end-to-end case per framework
 ├── docs/
@@ -108,7 +108,7 @@ The core layer is the package's center of gravity: `HashidsManager` holds the co
 
 Six capability groups, all built around the same kernel:
 
-- **Encoding API**: `encode()` / `decode()` / `encode_hex()` / `decode_hex()`; proxy methods land on the default connection, no explicit `connection()` needed.
+- **Encoding API**: `encode()` / `decode()` / `encode_hex()` / `decode_hex()`; proxy methods land on the default connection, no explicit `connection()` needed; decode ignores leading and trailing Unicode whitespace.
 - **Multi-connection management**: switch with `connection(Some("alternative"))`; built lazily, each connection is constructed only once.
 - **Native Guard**: a framework-independent request guard that works by dropping it into any framework's application state and cloning it per request; all eight adapters produce a `Guard`.
 - **Eight framework adapters**: Axum uses `FromRequestParts`, Actix Web uses `FromRequest`, Rocket uses a `FromRequest` guard, Poem uses `FromRequest`, Salvo uses a Depot injector (`.hoop()`), Warp uses a Filter, bee-rust uses native `Filter` hooks, and e-cat uses an `Extension` layer — each following its framework's idioms.
@@ -121,7 +121,7 @@ Six capability groups, all built around the same kernel:
 
 A request does exactly three things: **take the Guard** (extractor / guard / filter / hoop — the default connection was already resolved and cached at wiring time) → **encode or decode** (`encode()` / `decode()` land on the default connection) → **return** the short ID or the original number. A connection is built through `HashidsFactory::make()` and written to the cache only the first time it is used.
 
-When the default connection is not configured there is no silent degradation: Warp / e-cat / Guard error out at wiring time (startup fails), while the other frameworks return 500 at extraction; invalid input to encode/decode itself, by contrast, returns empty sentinels per PHP semantics — the two kinds of failure are never conflated.
+When the default connection is not configured there is no silent degradation: Warp / e-cat / Guard error out at wiring time (startup fails), while the other frameworks return 500 at extraction; invalid input to encode/decode itself, by contrast, returns empty sentinels (empty string / empty array) — the two kinds of failure are never conflated.
 
 ## Lifecycle
 
@@ -167,7 +167,7 @@ Enable framework adapters as needed (none are compiled by default):
 
 ## Configuration
 
-**Isomorphic** with the PHP version's configuration (a root-level `default` plus `connections`, each connection entry carrying `salt` / `length` / `alphabet`) — only turned from an array into typed structs:
+Typed configuration: a root-level `default` plus `connections`, each connection entry carrying `salt` / `min_hash_length` / `alphabet`:
 
 ```rust
 use hashids::{Config, ConnectionConfig};
@@ -185,8 +185,9 @@ let config = Config::new()
     );
 ```
 
-- `default`: the default connection name (e.g. `main`); when absent or empty it is treated as `main` (aligned with vinkla/hashids).
-- `connections`: connection name => `salt`, `min_hash_length` (the PHP configuration key is `length`), and an optional `alphabet`.
+- `default`: the default connection name (e.g. `main`); when absent or empty it is treated as `main`.
+- `connections`: connection name => `salt`, `min_hash_length` (the minimum hash length; no upper bound — the caller keeps it reasonable), and an optional `alphabet`.
+- Alphabet validation: at least 16 unique characters after deduplication; no spaces; no NUL character (U+0000) — error variant `AlphabetWithNul`.
 
 ## Native Usage (Guard)
 
