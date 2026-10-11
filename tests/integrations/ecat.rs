@@ -23,8 +23,15 @@ fn app(guard: Guard) -> Router {
 
 #[tokio::test]
 async fn extension_layer_provides_guard() {
+    // custom_params 向量（tests/vectors.rs）：salt + 最短长度 30 + 自定义字母表。
     let guard = Guard::from_manager(Arc::new(HashidsManager::new(
-        Config::new().connection("main", ConnectionConfig::new()),
+        Config::new().connection(
+            "main",
+            ConnectionConfig::new()
+                .salt("this is my salt")
+                .min_hash_length(30)
+                .alphabet("xzal86grmb4jhysfoqp3we7291kuct5iv0nd"),
+        ),
     )))
     .unwrap();
 
@@ -35,7 +42,7 @@ async fn extension_layer_provides_guard() {
 
     assert_eq!(res.status(), StatusCode::OK);
     let body = to_bytes(res.into_body(), 64 * 1024).await.unwrap();
-    assert_eq!(&body[..], b"o2fXhV"); // 官方默认向量
+    assert_eq!(&body[..], b"18apy3wlqkjvd5h1id7mn5ore2d06b");
 }
 
 #[test]

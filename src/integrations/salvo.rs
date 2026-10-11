@@ -35,6 +35,7 @@ pub struct Hashids(pub Guard);
 
 /// 注入器：挂到 Router 上（`.hoop(HashidsInjector::new(manager))`），
 /// 每个请求把默认连接的 [`Guard`] 注入 Depot。
+#[derive(Debug)]
 pub struct HashidsInjector {
     manager: Arc<HashidsManager>,
 }
@@ -60,9 +61,10 @@ impl Handler for HashidsInjector {
                 depot.insert_typed(guard);
                 ctrl.call_next(req, depot, res).await;
             }
-            Err(err) => {
+            // 固定文案：不回显内部连接名等细节（与 axum 适配器一致）。
+            Err(_) => {
                 res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
-                res.render(Text::Plain(err.to_string()));
+                res.render(Text::Plain("hashids: default connection not configured"));
                 ctrl.skip_rest();
             }
         }

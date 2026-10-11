@@ -23,6 +23,7 @@
 //!     .with_state(manager);
 //! ```
 
+use std::future::{Future, ready};
 use std::sync::Arc;
 
 use axum::extract::{FromRef, FromRequestParts};
@@ -42,13 +43,18 @@ where
 {
     type Rejection = (StatusCode, &'static str);
 
-    async fn from_request_parts(_parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+    // 无 await：直接返回 `ready` 包好的现成结果（axum 0.8 的 trait 是
+    // RPITIT，同步实现即可）。
+    fn from_request_parts(
+        _parts: &mut Parts,
+        state: &S,
+    ) -> impl Future<Output = Result<Self, Self::Rejection>> + Send {
         let manager = Arc::<HashidsManager>::from_ref(state);
-        Guard::from_manager(manager).map(Self).map_err(|_| {
+        ready(Guard::from_manager(manager).map(Self).map_err(|_| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "hashids: default connection not configured",
             )
-        })
+        }))
     }
 }

@@ -4,6 +4,9 @@
 //! 因此适配器只需把 [`Guard`] 包成 axum `Extension` 层挂上去，handler 提取
 //! `Extension<Guard>`。
 //!
+//! 约束：e-cat 的 HTTP 传输层须使用 axum 0.8——本适配器以 `axum::Extension`
+//! 层接线，两侧 axum 大版本不一致会导致 `Extension` 类型不通。
+//!
 //! ```
 //! use std::sync::Arc;
 //!

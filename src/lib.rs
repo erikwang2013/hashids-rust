@@ -15,10 +15,10 @@
 //! 上面是项目宠物「哈希迪 Hashy」的 ASCII 版，它就住在 [`mascot`] 模块里：
 //! `mascot::greet()` 可直接打印问候，`cargo run --example mascot` 是同款示例。
 //!
-//! 内核原生实现 hashids 算法（对齐 [vinkla/hashids](https://github.com/vinkla/hashids)
-//! 官方测试向量），配置与用法对齐其「多连接 + 默认连接 + Manager + Factory」风格；
-//! 默认**零依赖**，八个 Web 框架适配（Axum / Actix Web / Rocket / Poem / Salvo /
-//! Warp / bee-rust / e-cat）按需开启 feature。
+//! 内核原生实现 hashids 算法（与 hashids 官方测试向量一致），提供
+//! 「多连接 + 默认连接 + Manager + Factory」四件套；默认**零依赖**，八个
+//! Web 框架适配（Axum / Actix Web / Rocket / Poem / Salvo / Warp /
+//! bee-rust / e-cat）按需开启 feature。
 //!
 //! ```
 //! use hashids::{Config, ConnectionConfig, HashidsManager};
@@ -37,8 +37,6 @@
 //!
 //! 未适配的框架/场景可以直接用 [`Guard`]（原生请求守卫）：把它放进任意框架的
 //! 应用状态，每请求克隆即可。
-#![forbid(unsafe_code)]
-#![warn(missing_docs)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub mod config;

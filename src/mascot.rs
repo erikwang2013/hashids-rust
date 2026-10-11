@@ -1,7 +1,7 @@
 //! 项目宠物「哈希迪 Hashy」。
 //!
-//! 图形本体见 `docs/mascot.svg`；终端里没有 SVG，因此这里保留一份等价的
-//! ASCII 版本（与 PHP 版 `Erikwang2013\Hashids\Mascot` 逐字符一致）。
+//! 图形本体见 `docs/mascot.svg`；终端里没有 SVG，因此这里保留一份同款
+//! 设计的 ASCII 版本。
 
 /// 宠物名。
 pub const NAME: &str = "哈希迪 Hashy";

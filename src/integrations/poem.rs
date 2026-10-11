@@ -44,8 +44,12 @@ impl<'a> FromRequest<'a> for Hashids {
 
         Guard::from_manager(Arc::clone(manager))
             .map(Self)
-            .map_err(|err| {
-                poem::Error::from_string(err.to_string(), StatusCode::INTERNAL_SERVER_ERROR)
+            // 固定文案：不回显内部连接名等细节（与 axum 适配器一致）。
+            .map_err(|_| {
+                poem::Error::from_string(
+                    "hashids: default connection not configured",
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                )
             })
     }
 }

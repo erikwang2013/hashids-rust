@@ -9,8 +9,15 @@ use warp::Filter;
 
 #[tokio::test]
 async fn filter_provides_guard() {
+    // custom_params 向量（tests/vectors.rs）：salt + 最短长度 30 + 自定义字母表。
     let manager = Arc::new(HashidsManager::new(
-        Config::new().connection("main", ConnectionConfig::new()),
+        Config::new().connection(
+            "main",
+            ConnectionConfig::new()
+                .salt("this is my salt")
+                .min_hash_length(30)
+                .alphabet("xzal86grmb4jhysfoqp3we7291kuct5iv0nd"),
+        ),
     ));
     let route = warp::get()
         .and(warp::path("user"))
@@ -24,7 +31,7 @@ async fn filter_provides_guard() {
         .await;
 
     assert_eq!(res.status(), 200);
-    assert_eq!(&res.body()[..], b"o2fXhV"); // 官方默认向量
+    assert_eq!(&res.body()[..], b"18apy3wlqkjvd5h1id7mn5ore2d06b");
 }
 
 #[test]

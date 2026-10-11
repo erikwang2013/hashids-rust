@@ -8,11 +8,11 @@ use crate::config::Config;
 use crate::factory::HashidsFactory;
 use crate::hashids::Hashids;
 
-/// 多连接管理器（对齐 PHP 版 `HashidsManager`）。
+/// 多连接管理器。
 ///
 /// - 连接**懒构建**：首次取用时经 [`HashidsFactory`] 构建，之后复用缓存
 ///   （同一连接 `connection()` 每次返回同一个 `Arc`）。
-/// - **配置在构造时快照**：对齐 PHP 版注意事项——改配置需要重建 Manager。
+/// - **配置在构造时快照**：改配置需要重建 Manager。
 /// - `Send + Sync`：可直接包进 `Arc` 放进任意 Web 框架的应用状态。
 #[derive(Debug)]
 pub struct HashidsManager {
@@ -23,7 +23,7 @@ pub struct HashidsManager {
 }
 
 impl HashidsManager {
-    /// 由配置构建。`default` 缺省/为空时按 `"main"` 处理（对齐 vinkla/hashids）。
+    /// 由配置构建。`default` 缺省/为空时按 `"main"` 处理。
     pub fn new(config: Config) -> Self {
         let default_connection = match config.default.as_deref() {
             Some(name) if !name.is_empty() => name.to_owned(),
@@ -50,6 +50,7 @@ impl HashidsManager {
     }
 
     /// 链式设置默认连接名（构造期使用）。
+    #[must_use]
     pub fn with_default_connection(mut self, name: impl Into<String>) -> Self {
         self.set_default_connection(name);
         self
@@ -61,6 +62,13 @@ impl HashidsManager {
     }
 
     /// 取命名连接（`None` 取默认连接）；懒构建 + 缓存。
+    ///
+    /// # Errors
+    ///
+    /// 连接解析失败时返回 [`Error`]：
+    /// 连接名为空（[`Error::EmptyConnectionName`]）、未在配置中登记
+    /// （[`Error::ConnectionNotConfigured`]），或字母表非法
+    /// （[`Error::AlphabetTooShort`] / [`Error::AlphabetWithSpace`]）。
     pub fn connection(&self, name: Option<&str>) -> Result<Arc<Hashids>, Error> {
         let name = name.unwrap_or_else(|| self.default_connection());
         if name.is_empty() {
@@ -87,22 +95,38 @@ impl HashidsManager {
         Ok(Arc::clone(cache.entry(name.to_owned()).or_insert(built)))
     }
 
-    /// 编码（代理到默认连接，对齐 PHP `__call` 转发）。
+    /// 编码（代理到默认连接）。
+    ///
+    /// # Errors
+    ///
+    /// 默认连接解析失败时返回 [`Error`]（同 [`Self::connection`]）。
     pub fn encode(&self, numbers: &[u64]) -> Result<String, Error> {
         Ok(self.connection(None)?.encode(numbers))
     }
 
     /// 解码（代理到默认连接）。
+    ///
+    /// # Errors
+    ///
+    /// 默认连接解析失败时返回 [`Error`]（同 [`Self::connection`]）。
     pub fn decode(&self, hash: &str) -> Result<Vec<u64>, Error> {
         Ok(self.connection(None)?.decode(hash))
     }
 
     /// 十六进制编码（代理到默认连接）。
+    ///
+    /// # Errors
+    ///
+    /// 默认连接解析失败时返回 [`Error`]（同 [`Self::connection`]）。
     pub fn encode_hex(&self, hex: &str) -> Result<String, Error> {
         Ok(self.connection(None)?.encode_hex(hex))
     }
 
     /// 十六进制解码（代理到默认连接）。
+    ///
+    /// # Errors
+    ///
+    /// 默认连接解析失败时返回 [`Error`]（同 [`Self::connection`]）。
     pub fn decode_hex(&self, hash: &str) -> Result<String, Error> {
         Ok(self.connection(None)?.decode_hex(hash))
     }
