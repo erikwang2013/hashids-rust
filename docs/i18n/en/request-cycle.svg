@@ -121,7 +121,7 @@
   <text class="t-security" x="76" y="412" font-size="12">Failure path · default connection unset</text>
   <text class="t-muted"    x="76" y="440" font-size="9">Warp / e-cat / Guard: from_manager() errors at wiring — startup fails</text>
   <text class="t-muted"    x="76" y="461" font-size="9">Other frameworks: 500 at extraction — configuration errors never degrade silently</text>
-  <text class="t-dim"      x="76" y="482" font-size="9">Invalid encode/decode input does not error: returns empty sentinels (PHP semantics)</text>
+  <text class="t-dim"      x="76" y="482" font-size="9">Invalid encode/decode input does not error: returns empty sentinels</text>
 
   <text class="t-dim" x="24" y="600" font-size="9">© 2026 erik · https://erik.xyz</text>
 </svg>

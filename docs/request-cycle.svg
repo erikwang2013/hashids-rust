@@ -121,7 +121,7 @@
   <text class="t-security" x="76" y="412" font-size="12">失败路径 · 默认连接未配置</text>
   <text class="t-muted"    x="76" y="440" font-size="9">Warp / e-cat / Guard：接线期 from_manager() 直接报错，启动即失败</text>
   <text class="t-muted"    x="76" y="461" font-size="9">其余框架：提取时返回 500 —— 配置错误不会静默降级</text>
-  <text class="t-dim"      x="76" y="482" font-size="9">编解码自身的非法输入不报错：返回空哨兵（对齐 PHP 语义）</text>
+  <text class="t-dim"      x="76" y="482" font-size="9">编解码自身的非法输入不报错：返回空哨兵</text>
 
   <text class="t-dim" x="24" y="600" font-size="9">© 2026 erik · https://erik.xyz</text>
 </svg>

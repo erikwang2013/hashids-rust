@@ -17,20 +17,20 @@
 
 把数据库自增 ID 换成短小、不可猜测的字符串，**一套 API 同时跑在 Axum、Actix Web、Rocket、Poem、Salvo、Warp、bee-rust、e-cat 上**。
 
-内核原生实现 hashids 算法（对齐 [vinkla/hashids](https://github.com/vinkla/hashids) 的官方测试向量）；配置与用法对齐 [**vinkla/hashids**](https://github.com/vinkla/laravel-hashids)（多连接、默认连接、`HashidsManager` + 工厂），迁移成本低。默认 feature 下**零第三方依赖**。
+内核为 hashids 算法的原生实现，与 hashids 官方测试向量一致；类型化配置（多连接、默认连接、`HashidsManager` + 工厂）开箱即用。默认 feature 下**零第三方依赖**。
 
 ## 项目说明
 
 **Hashids** 是一款短 ID 生成器，可将数字 ID（如数据库主键）编码为短小、唯一且不可猜测的字符串。它不同于 UUID 或雪花 ID——Hashids 更适合用于面向用户的场景（URL、分享码、订单号等），在保持短小可读的同时隐藏原始数字。
 
-本包 `erikwang2013/hashids-rust` 是 Hashids 的 **Rust 原生实现与多框架集成层**，在设计上参考并对齐了 [vinkla/hashids](https://github.com/vinkla/laravel-hashids) 的 API 风格（多连接、默认连接、Manager + Factory 模式），并适配了 Rust 生态常用的 Web 框架。
+本包 `erikwang2013/hashids-rust` 是 Hashids 的 **Rust 原生实现与多框架集成层**：提供多连接、默认连接、Manager + Factory 模式的类型化 API，并适配了 Rust 生态常用的 Web 框架。
 
 **核心特性：**
 
-- **多框架兼容**：同一套 API 同时支持 Axum、Actix Web、Rocket、Poem、Salvo、Warp、bee-rust、e-cat；未适配的框架用原生 `Guard` 即可接入，迁移成本极低。
-- **多连接支持**：一个应用可同时配置多套 salt/length 组合（如用户 ID 与订单 ID 使用不同盐值），通过 `connection(Some("xxx"))` 切换。
+- **多框架兼容**：同一套 API 同时支持 Axum、Actix Web、Rocket、Poem、Salvo、Warp、bee-rust、e-cat；未适配的框架用原生 `Guard` 即可接入，接入成本极低。
+- **多连接支持**：一个应用可同时配置多套 salt / min_hash_length 组合（如用户 ID 与订单 ID 使用不同盐值），通过 `connection(Some("xxx"))` 切换。
 - **无框架依赖**：不依赖任何特定框架即可独立使用，直接 `HashidsManager::new(config)` 即可工作；默认 feature 下零第三方依赖。
-- **对齐 vinkla/hashids**：`Config`、连接配置（`salt` / `min_hash_length` / `alphabet`）与 `HashidsManager` + `HashidsFactory` 的结构与 vinkla/hashids 一致，语义可平滑迁移。
+- **类型化配置**：`Config` 与连接配置（`salt` / `min_hash_length` / `alphabet`）均为类型化结构体，`HashidsManager` + `HashidsFactory` 职责清晰、开箱即用。
 - **框架原生风格**：各框架集成遵循各自的惯用法——Axum 用提取器、Actix Web 用 `FromRequest`、Rocket 用请求守卫、Poem 用提取器、Salvo 用 Depot 注入器、Warp 用 Filter、bee-rust 用原生 Filter 钩子、e-cat 用 Extension 层。
 
 **适用场景：**
@@ -48,7 +48,7 @@
 - 一旦上线后修改 Salt 或 Length，所有已编码的 ID 将变为无效，请提前规划并固定配置。
 - **Salt 留空等于没有保护**：空 salt 下编码结果可枚举（`encode(1)`、`encode(2)`… 顺序可预测）。空 salt 既不报错也不告警，只是静默降级 —— 上线前请确认盐已设置。
 - **配置在构造时快照**：`HashidsManager` 构造后配置固定（`set_default_connection` 也须在包进 `Arc` 之前调用），改配置需要重建 Manager —— 常驻服务同理，重建后生效。
-- **数字范围为 `u64`**：不复刻 PHP 版 bcmath/gmp 的任意精度；官方测试向量（含 `u64::MAX`）全部落在 `u64` 内，无损。
+- **数字范围为 `u64`**（含 `u64::MAX` 无损）：超出 `u64` 的哈希按非法输入拒收（返回空数组）。
 
 ## 项目结构
 
@@ -58,7 +58,7 @@ hashids-rust/
 │   ├── lib.rs                       # crate 文档与再导出
 │   ├── hashids.rs                   # 内核算法：encode/decode/encode_hex/decode_hex
 │   ├── config.rs                    # Config / ConnectionConfig（default + connections）
-│   ├── error.rs                     # Error（对齐 PHP 版报错语义与文案）
+│   ├── error.rs                     # Error：非法输入与字母表校验
 │   ├── factory.rs                   # HashidsFactory：唯一构造点
 │   ├── manager.rs                   # 核心：多连接解析、实例缓存、默认连接代理
 │   ├── guard.rs                     # 原生 Guard（请求守卫）：不依赖任何框架的入口
@@ -70,7 +70,7 @@ hashids-rust/
 ├── examples/
 │   └── mascot.rs                    # cargo run --example mascot 打印宠物问候
 ├── tests/
-│   ├── vectors.rs                   # 官方测试向量（vinkla/hashids 全量转写）
+│   ├── vectors.rs                   # hashids 官方测试向量全量用例
 │   ├── manager.rs · guard.rs · factory.rs · mascot.rs
 │   └── integrations/                # 八个框架各一个端到端用例
 ├── docs/
@@ -108,7 +108,7 @@ hashids-rust/
 
 六个能力分组，全部围绕同一个内核：
 
-- **编解码 API**：`encode()` / `decode()` / `encode_hex()` / `decode_hex()`，经代理方法落到默认连接，无需显式 `connection()`。
+- **编解码 API**：`encode()` / `decode()` / `encode_hex()` / `decode_hex()`，经代理方法落到默认连接，无需显式 `connection()`；解码前忽略首尾 Unicode 空白。
 - **多连接管理**：`connection(Some("alternative"))` 切换；懒加载构建，同一连接只构建一次。
 - **原生 Guard**：不依赖任何框架的请求守卫，放进任意框架的应用状态、每请求克隆即可用；八个适配器全部产出 `Guard`。
 - **八框架适配**：Axum 用 `FromRequestParts`、Actix Web 用 `FromRequest`、Rocket 用 `FromRequest` 守卫、Poem 用 `FromRequest`、Salvo 用 Depot 注入器（`.hoop()`）、Warp 用 Filter、bee-rust 用原生 `Filter` 钩子、e-cat 用 `Extension` 层，各自遵循框架惯用法。
@@ -121,7 +121,7 @@ hashids-rust/
 
 一次请求只做三件事：**取出 Guard**（提取器 / 守卫 / 过滤器 / hoop，默认连接已在接线期解析并缓存）→ **编解码**（`encode()` / `decode()` 落到默认连接）→ **返回**短 ID 或原数字。某个连接首次被用到时，才会经 `HashidsFactory::make()` 构建并写入缓存。
 
-默认连接未配置时不会静默降级：Warp / e-cat / Guard 在接线期直接报错（启动即失败），其余框架在提取时返回 500；而编解码自身的非法输入按 PHP 语义返回空哨兵——两类失败互不混淆。
+默认连接未配置时不会静默降级：Warp / e-cat / Guard 在接线期直接报错（启动即失败），其余框架在提取时返回 500；而编解码自身的非法输入返回空哨兵（空字符串 / 空数组）——两类失败互不混淆。
 
 ## 生命周期
 
@@ -167,7 +167,7 @@ hashids-rust = "1.0"
 
 ## 配置结构
 
-与 PHP 版配置**同构**（根级 `default` + `connections`，连接项含 `salt` / `length` / `alphabet`），只是从数组变成类型化结构体：
+类型化配置：根级 `default` + `connections`，连接项含 `salt` / `min_hash_length` / `alphabet`：
 
 ```rust
 use hashids::{Config, ConnectionConfig};
@@ -185,8 +185,9 @@ let config = Config::new()
     );
 ```
 
-- `default`：默认连接名（如 `main`）；缺省或为空时按 `main` 处理（对齐 vinkla/hashids）。
-- `connections`：连接名 => `salt`、`min_hash_length`（PHP 配置键为 `length`）、可选 `alphabet`。
+- `default`：默认连接名（如 `main`）；缺省或为空时按 `main` 处理。
+- `connections`：连接名 => `salt`、`min_hash_length`（最短哈希长度，不设上限、由调用方保证合理）、可选 `alphabet`。
+- 字母表校验：去重后至少 16 个唯一字符；不得含空格；不得含 NUL 字符（U+0000），错误变体 `AlphabetWithNul`。
 
 ## 原生用法（Guard）
 

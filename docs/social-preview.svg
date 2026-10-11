@@ -21,7 +21,7 @@
 
   <text x="80" y="228" font-size="76" font-weight="700" fill="#0f172a">hashids-rust</text>
   <text x="80" y="300" font-size="30" fill="#334155">把数据库自增 ID 换成短小、不可猜测的字符串</text>
-  <text x="80" y="362" font-size="22" fill="#64748b">Rust · 内核零依赖 · API 对齐 vinkla/hashids</text>
+  <text x="80" y="362" font-size="22" fill="#64748b">Rust · 内核零依赖 · 八框架适配</text>
   <text x="80" y="400" font-size="22" fill="#64748b">Axum / Actix Web / Rocket / Poem</text>
   <text x="80" y="434" font-size="22" fill="#64748b">Salvo / Warp / bee-rust / e-cat</text>
 

@@ -84,7 +84,7 @@
   <text class="t-frontend" x="82" y="233" font-size="13">编解码 API</text>
   <text class="t-muted" x="82" y="260" font-size="10">encode() / decode() / encode_hex() / decode_hex()</text>
   <text class="t-muted" x="82" y="282" font-size="10">代理方法落到默认连接，无需显式 connection()</text>
-  <text class="t-dim"   x="82" y="302" font-size="10">空输入 / 非法输入返回空哨兵（对齐 PHP）</text>
+  <text class="t-dim"   x="82" y="302" font-size="10">空输入 / 非法输入返回空哨兵</text>
 
   <rect class="card" x="60" y="330" width="400" height="112" rx="12"/>
   <text class="t-database" x="82" y="363" font-size="13">多连接管理</text>
@@ -115,7 +115,7 @@
   <text class="t-messagebus" x="642" y="493" font-size="13">零依赖内核</text>
   <text class="t-muted" x="642" y="520" font-size="10">默认 feature 无任何第三方 crate（仅 std）</text>
   <text class="t-muted" x="642" y="542" font-size="10">原生实现 hashids，数字范围 u64</text>
-  <text class="t-dim"   x="642" y="562" font-size="10">对齐 vinkla/hashids official test vectors</text>
+  <text class="t-dim"   x="642" y="562" font-size="10">与 hashids 官方测试向量一致</text>
 
   <text class="t-dim" x="24" y="604" font-size="9">© 2026 erik · https://erik.xyz</text>
 </svg>

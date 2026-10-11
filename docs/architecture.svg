@@ -184,7 +184,7 @@
   <rect class="c-mask"     x="380" y="620" width="320" height="52" rx="10"/>
   <rect class="c-database" x="380" y="620" width="320" height="52" rx="10"/>
   <text class="t-primary" x="540" y="644" font-size="12" text-anchor="middle">src/hashids.rs · 原生实现 · 零依赖</text>
-  <text class="t-muted"   x="540" y="664" font-size="9"  text-anchor="middle">encode / decode / hex · 对齐官方测试向量</text>
+  <text class="t-muted"   x="540" y="664" font-size="9"  text-anchor="middle">encode / decode / hex · 与 hashids 官方测试向量一致</text>
 
   <text class="t-dim" x="24" y="698" font-size="9">© 2026 erik · https://erik.xyz</text>
 </svg>
