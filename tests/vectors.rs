@@ -1,4 +1,4 @@
-//! 官方测试向量，转写自 vinkla/hashids（PHP v5.0.2）`tests/HashidsTest.php`。
+//! hashids 官方测试向量（规范参考实现测试套件全量转写）。
 //!
 //! 每个用例跑三断言：encode → id、decode(id) → numbers、非法输入 → 空哨兵。
 
@@ -265,7 +265,7 @@ fn bad_input_returns_sentinels() {
     assert_eq!(hashids.encode(&[]), "");
     assert_eq!(hashids.decode(""), Vec::<u64>::new());
     assert_eq!(hashids.decode("f"), Vec::<u64>::new());
-    assert_eq!(hashids.decode("0"), Vec::<u64>::new()); // PHP 的 falsy 语义等价
+    assert_eq!(hashids.decode("0"), Vec::<u64>::new()); // 非法哈希返回空数组
     assert_eq!(hashids.encode_hex("z"), "");
     assert_eq!(hashids.encode_hex(""), "");
     assert_eq!(hashids.decode_hex("f"), "");
@@ -295,7 +295,73 @@ fn invalid_alphabets_are_rejected() {
 
 #[test]
 fn stable_across_min_length_padding() {
-    // 对齐 PHP testBehaviourForDifferentBCMathAccuracy。
+    // 最短长度 padding 下输出稳定。
     let hashids = Hashids::with_default_alphabet(CUSTOM_SALT, 12);
     assert_eq!(hashids.encode(&[1]), "DngB0NV05ev1");
+}
+
+#[test]
+fn hashes_beyond_u64_are_rejected() {
+    // 超出 u64 数值域的哈希被拒收。
+    let hashids = Hashids::with_default_alphabet(CUSTOM_SALT, 0);
+    assert_eq!(hashids.decode("n81WpyvKpk9Rz"), Vec::<u64>::new());
+}
+
+#[test]
+fn degenerate_alphabet_borrows_guards_from_seps() {
+    // 16 个唯一字符里 14 个是 seps：字母表缩到 2 个字符，guards 从 seps 借。
+    let hashids = Hashids::new("", 0, "abcfhistuCFHISTU").unwrap();
+    assert_eq!(hashids.encode(&[1, 2, 3]), "aahbaiaa");
+    assert_eq!(hashids.decode("aahbaiaa"), vec![1, 2, 3]);
+    assert_eq!(hashids.encode(&[0]), "ab");
+    assert_eq!(hashids.encode(&[7, 7, 7]), "baaaFbbbFaaa");
+}
+
+#[test]
+fn empty_seps_are_reallocated_from_alphabet() {
+    // 字母表不含任何 seps：seps 走从字母表重新分配的分支。
+    let hashids = Hashids::new("", 0, "abdegjklmnopqrvw").unwrap();
+    assert_eq!(hashids.encode(&[1, 2, 3]), "qqbmdl");
+    assert_eq!(hashids.encode(&[0, 1]), "lvao");
+}
+
+#[test]
+fn encode_hex_handles_chunk_boundary() {
+    // 13 个十六进制字符：12 字符整块 + 1 字符尾块。
+    let hashids = Hashids::default();
+    assert_eq!(hashids.encode_hex("aabbccddeeff0"), "ln093xBMQ6Sg");
+}
+
+#[test]
+fn decode_trims_surrounding_whitespace() {
+    let hashids = Hashids::default();
+    assert_eq!(hashids.decode(" gY "), vec![0]);
+    assert_eq!(hashids.decode("gY\n\r"), vec![0]);
+}
+
+#[test]
+fn non_bmp_alphabet_round_trips() {
+    let alphabet = "😀😁😂🤣😃😄😅😆😉😊😋😎😍😘ab";
+    let hashids = Hashids::new("", 0, alphabet).unwrap();
+    assert_eq!(hashids.encode(&[1, 2, 3]), "😍😊😁😘😂😆");
+    assert_eq!(hashids.encode(&[0]), "😅😋");
+
+    let salted = Hashids::new("😀世界", 0, alphabet).unwrap();
+    assert_eq!(salted.encode(&[1, 2, 3]), "😘😎😁😄😂😋");
+}
+
+#[test]
+fn invalid_hashes_decode_to_empty() {
+    let hashids = Hashids::default();
+    assert_eq!(hashids.decode("gY~"), Vec::<u64>::new());
+    assert_eq!(hashids.decode("g Y"), Vec::<u64>::new());
+    assert_eq!(hashids.decode("aaaaaaa"), Vec::<u64>::new());
+}
+
+#[test]
+fn alphabet_with_nul_is_rejected() {
+    assert_eq!(
+        Hashids::new("", 0, "abcdefghijklmno\0").unwrap_err(),
+        Error::AlphabetWithNul
+    );
 }

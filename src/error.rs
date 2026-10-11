@@ -1,12 +1,12 @@
 //! 错误类型。
 //!
-//! 与 PHP 版 `InvalidArgumentException` 的报错语义对齐；消息文案沿用
-//! [vinkla/hashids](https://github.com/vinkla/hashids) 原文，便于对照排查。
+//! 全库统一的错误类型；文案直接面向调用方排查。
 
 use std::fmt;
 
 /// hashids 统一错误类型。
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum Error {
     /// 连接名为空字符串。
     EmptyConnectionName,
@@ -16,6 +16,8 @@ pub enum Error {
     AlphabetTooShort,
     /// 字母表包含空格。
     AlphabetWithSpace,
+    /// 字母表包含 NUL 字符（U+0000）。
+    AlphabetWithNul,
 }
 
 impl fmt::Display for Error {
@@ -31,6 +33,9 @@ impl fmt::Display for Error {
             ),
             Self::AlphabetWithSpace => {
                 write!(f, "The Hashids alphabet can't contain spaces.")
+            }
+            Self::AlphabetWithNul => {
+                write!(f, "The Hashids alphabet can't contain the NUL character.")
             }
         }
     }
