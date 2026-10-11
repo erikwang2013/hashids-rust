@@ -37,10 +37,14 @@ impl FromRequest for Hashids {
 
     fn from_request(req: &HttpRequest, _payload: &mut Payload) -> Self::Future {
         match req.app_data::<web::Data<HashidsManager>>().cloned() {
-            Some(data) => match Guard::from_manager(data.into_inner()) {
-                Ok(guard) => ready(Ok(Self(guard))),
-                Err(err) => ready(Err(ErrorInternalServerError(err))),
-            },
+            // 固定文案：不回显内部连接名等细节（与 axum 适配器一致）。
+            Some(data) => ready(
+                Guard::from_manager(data.into_inner())
+                    .map(Self)
+                    .map_err(|_| {
+                        ErrorInternalServerError("hashids: default connection not configured")
+                    }),
+            ),
             None => ready(Err(ErrorInternalServerError(
                 "hashids: HashidsManager not registered",
             ))),
