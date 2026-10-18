@@ -1,6 +1,6 @@
 [package]
 name = "hashids-rust"
-version = "2.0.0"
+version = "2.0.1"
 edition = "2024"
 rust-version = "1.85"
 description = "Hashids for Rust: native implementation plus multi-framework integration (Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, e-cat), with a multi-connection Manager + Factory API."
