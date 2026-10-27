@@ -76,19 +76,19 @@
   <rect x="56" y="64" width="108" height="140" rx="38" fill="url(#bodyGrad)" stroke="rgba(15,23,42,.08)" stroke-width="1.5"/>
 
   
-  <ellipse cx="91"  cy="110" rx="14" ry="15" fill="#ffffff"/>
-  <ellipse cx="129" cy="110" rx="14" ry="15" fill="#ffffff"/>
-  <circle cx="93"  cy="113" r="7" fill="#0f172a"/>
-  <circle cx="131" cy="113" r="7" fill="#0f172a"/>
-  <circle cx="90"  cy="109" r="2.6" fill="#ffffff"/>
-  <circle cx="128" cy="109" r="2.6" fill="#ffffff"/>
+  
+  
+  
+  
+  
+  
 
   
-  <circle class="m-cheek" cx="70"  cy="132" r="5.5"/>
-  <circle class="m-cheek" cx="150" cy="132" r="5.5"/>
+  
+  
 
   
-  <path class="m-ink" d="M95 136 Q110 149 125 136" fill="none" stroke-width="3.5" stroke-linecap="round"/>
+  
 
   
   <g stroke="rgba(255,255,255,.6)" stroke-width="5.5" stroke-linecap="round">
@@ -101,4 +101,4 @@
   
   <path class="m-panel" d="M190 98 L168 132 L208 106 Z"/>
   <rect class="m-panel" x="186" y="64" width="82" height="48" rx="14"/>
-  <text class="m-id" x="227" y="95" text-anchor="middle" font-size="17" font-weight="600">3kTMd</text></g><g class="ex-face"><ellipse cx="110" cy="122" rx="36" ry="28" fill="#FFFFFF"/><ellipse cx="91" cy="110" rx="14" ry="15.96" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.24"/><ellipse cx="91" cy="110" rx="8.12" ry="10.21" fill="#0F172A"/><circle cx="87.92" cy="105.53" r="2.8" fill="#FFFFFF"/><circle cx="94.36" cy="114.79" r="1.4" fill="#FFFFFF" opacity=".9"/><ellipse cx="129" cy="110" rx="14" ry="15.96" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.24"/><ellipse cx="129" cy="110" rx="8.12" ry="10.21" fill="#0F172A"/><circle cx="125.92" cy="105.53" r="2.8" fill="#FFFFFF"/><circle cx="132.36" cy="114.79" r="1.4" fill="#FFFFFF" opacity=".9"/><path d="M 100.34,140.8 Q 110,151.89 119.66,140.8" fill="none" stroke="#0F172A" stroke-width="2.24" stroke-linecap="round"/><ellipse class="ex-anim-pulse" cx="80.5" cy="128.9" rx="10.92" ry="5.88" fill="#FF8FB3" opacity="0.65"/><ellipse class="ex-anim-pulse" cx="139.5" cy="128.9" rx="10.92" ry="5.88" fill="#FF8FB3" opacity="0.65"/><path class="ex-anim-spark" style="animation-delay:0.0s" d="M 68.34,71.84 L 70.69,77.89 L 76.74,80.24 L 70.69,82.59 L 68.34,88.64 L 65.98,82.59 L 59.94,80.24 L 65.98,77.89 Z" fill="#FFC93C"/><path class="ex-anim-spark" style="animation-delay:0.4s" d="M 150.18,64.31 L 152.14,69.35 L 157.18,71.31 L 152.14,73.27 L 150.18,78.31 L 148.22,73.27 L 143.18,71.31 L 148.22,69.35 Z" fill="#FFC93C"/><path class="ex-anim-spark" style="animation-delay:0.8s" d="M 154.64,96.31 L 155.97,99.74 L 159.4,101.07 L 155.97,102.4 L 154.64,105.83 L 153.31,102.4 L 149.88,101.07 L 153.31,99.74 Z" fill="#FFC93C"/></g></g></svg>
+  <text class="m-id" x="227" y="95" text-anchor="middle" font-size="17" font-weight="600">3kTMd</text></g><g class="ex-face"><ellipse cx="91" cy="110" rx="14" ry="15.96" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.24"/><ellipse cx="91" cy="110" rx="8.12" ry="10.21" fill="#0F172A"/><circle cx="87.92" cy="105.53" r="2.8" fill="#FFFFFF"/><circle cx="94.36" cy="114.79" r="1.4" fill="#FFFFFF" opacity=".9"/><ellipse cx="129" cy="110" rx="14" ry="15.96" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.24"/><ellipse cx="129" cy="110" rx="8.12" ry="10.21" fill="#0F172A"/><circle cx="125.92" cy="105.53" r="2.8" fill="#FFFFFF"/><circle cx="132.36" cy="114.79" r="1.4" fill="#FFFFFF" opacity=".9"/><path d="M 100.34,140.8 Q 110,151.89 119.66,140.8" fill="none" stroke="#0F172A" stroke-width="2.24" stroke-linecap="round"/><path class="ex-anim-spark" style="animation-delay:0.0s" d="M 68.34,71.84 L 70.69,77.89 L 76.74,80.24 L 70.69,82.59 L 68.34,88.64 L 65.98,82.59 L 59.94,80.24 L 65.98,77.89 Z" fill="#FFC93C"/><path class="ex-anim-spark" style="animation-delay:0.4s" d="M 150.18,64.31 L 152.14,69.35 L 157.18,71.31 L 152.14,73.27 L 150.18,78.31 L 148.22,73.27 L 143.18,71.31 L 148.22,69.35 Z" fill="#FFC93C"/><path class="ex-anim-spark" style="animation-delay:0.8s" d="M 154.64,96.31 L 155.97,99.74 L 159.4,101.07 L 155.97,102.4 L 154.64,105.83 L 153.31,102.4 L 149.88,101.07 L 153.31,99.74 Z" fill="#FFC93C"/></g></g></svg>
