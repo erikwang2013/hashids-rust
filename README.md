@@ -161,7 +161,7 @@ hashids-rust = "2.0"
 | `bee` | bee-rust（`bee_router` 1） | `HashidsFilter` 或直接配合 axum 提取器 |
 | `ecat` | e-cat（`ecat` 4） | `router.layer(hashids_layer(guard))` |
 
-> **运行环境**：核心（默认 feature）需要 Rust **1.85+**。框架适配的 MSRV 以各框架 crate 自身为准——Actix Web 4.15 需 **1.88+**、Salvo 1.0 需 **1.94+**，`--all-features` 实际按最高的 **1.94** 计。
+> **运行环境**：核心（默认 feature）需要 Rust **1.85+**。框架适配的 MSRV 以各框架 crate 自身为准——Actix Web 4.15 需 **1.88+**、Salvo 1.1 需 **1.95+**，`--all-features` 实际按最高的 **1.95** 计。
 >
 > **包名说明**：crates.io 上另有一个 2015 年停更的同名 `hashids` crate。本包的实际 crate 名为 `hashids-rust`，库名为 `hashids`（代码里写 `use hashids::...`）；同时依赖两者时请注意区分。
 

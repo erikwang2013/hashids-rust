@@ -161,7 +161,7 @@ Enable framework adapters as needed (none are compiled by default):
 | `bee` | bee-rust (`bee_router` 1) | `HashidsFilter` or use with the axum extractor directly |
 | `ecat` | e-cat (`ecat` 4) | `router.layer(hashids_layer(guard))` |
 
-> **Runtime requirements**: the core (default features) requires Rust **1.85+**. The MSRV of each framework adapter follows the framework crate itself — Actix Web 4.15 needs **1.88+** and Salvo 1.0 needs **1.94+**, so `--all-features` effectively targets the highest, **1.94**.
+> **Runtime requirements**: the core (default features) requires Rust **1.85+**. The MSRV of each framework adapter follows the framework crate itself — Actix Web 4.15 needs **1.88+** and Salvo 1.1 needs **1.95+**, so `--all-features` effectively targets the highest, **1.95**.
 >
 > **Package name**: crates.io hosts another `hashids` crate under the same name, unmaintained since 2015. This package's actual crate name is `hashids-rust`, with the library name `hashids` (write `use hashids::...` in code); mind the distinction when depending on both.
 

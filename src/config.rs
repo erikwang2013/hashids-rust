@@ -97,10 +97,8 @@ mod tests {
 
     #[test]
     fn debug_redacts_salt() {
-        let config = Config::new().connection(
-            "main",
-            ConnectionConfig::new().salt("super-secret-salt"),
-        );
+        let config =
+            Config::new().connection("main", ConnectionConfig::new().salt("super-secret-salt"));
         let debug = format!("{config:?}");
         assert!(!debug.contains("super-secret-salt"));
         assert!(debug.contains("redacted"));
