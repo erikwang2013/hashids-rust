@@ -108,17 +108,3 @@ fn proxies_match_direct_calls() {
     let hex = manager.encode_hex("deadbeef").unwrap();
     assert_eq!(manager.decode_hex(&hex).unwrap(), "deadbeef");
 }
-
-#[test]
-fn factory_is_exposed() {
-    let manager = manager();
-    let built = manager
-        .factory()
-        .make(&ConnectionConfig::new().salt("this is my salt"))
-        .unwrap();
-    // 与连接 "main"（同 salt/长度）行为一致。
-    assert_eq!(
-        built.encode(&[1, 2, 3]),
-        manager.encode(&[1, 2, 3]).unwrap()
-    );
-}

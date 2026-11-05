@@ -4,7 +4,7 @@
 
   <defs>
     <style>
-      text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+      text { font-family: "DejaVu Sans Mono", "Source Han Mono SC", "Noto Sans Mono CJK SC", monospace; }
       .bg        { fill: #ffffff; }
       .lane      { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 1; }
       .t-primary { fill: #0f172a; font-weight: 600; }
@@ -49,7 +49,7 @@
     <ellipse cx="23" cy="25" rx="4.4" ry="4.8" fill="#ffffff"/>
     <circle cx="11.8" cy="26" r="2.2" fill="#0f172a"/>
     <circle cx="23.8" cy="26" r="2.2" fill="#0f172a"/>
-    <text x="17" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="700" text-anchor="middle" fill="rgba(15,23,42,.78)">#</text>
+    <text x="17" y="44" font-family=""DejaVu Sans Mono", "Source Han Mono SC", "Noto Sans Mono CJK SC", monospace" font-size="12" font-weight="700" text-anchor="middle" fill="rgba(15,23,42,.78)">#</text>
   </g>
 
   <text x="24" y="40" class="t-primary" font-size="20">Lifecycle</text>

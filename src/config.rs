@@ -4,9 +4,10 @@
 //! 连接项含 `salt` / `min_hash_length` / `alphabet` 三个字段。
 
 use std::collections::BTreeMap;
+use std::fmt;
 
 /// 单个连接的配置（[`Config::connections`] 中的一项）。
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct ConnectionConfig {
     /// 盐值；留空等于没有保护（编码结果可枚举），上线前务必设置。
     pub salt: String,
@@ -14,6 +15,20 @@ pub struct ConnectionConfig {
     pub min_hash_length: usize,
     /// 可选自定义字母表；`None` 使用默认字母表。
     pub alphabet: Option<String>,
+}
+
+// 与 `Hashids` 的 `Salt` 一致：Debug 不输出盐值，避免日志泄漏。
+impl fmt::Debug for ConnectionConfig {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ConnectionConfig")
+            .field(
+                "salt",
+                &format_args!("[redacted; {} chars]", self.salt.chars().count()),
+            )
+            .field("min_hash_length", &self.min_hash_length)
+            .field("alphabet", &self.alphabet)
+            .finish()
+    }
 }
 
 impl ConnectionConfig {
@@ -73,5 +88,21 @@ impl Config {
     pub fn connection(mut self, name: impl Into<String>, config: ConnectionConfig) -> Self {
         self.connections.insert(name.into(), config);
         self
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn debug_redacts_salt() {
+        let config = Config::new().connection(
+            "main",
+            ConnectionConfig::new().salt("super-secret-salt"),
+        );
+        let debug = format!("{config:?}");
+        assert!(!debug.contains("super-secret-salt"));
+        assert!(debug.contains("redacted"));
     }
 }

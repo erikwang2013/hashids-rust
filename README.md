@@ -145,7 +145,7 @@ cargo add hashids-rust
 
 ```toml
 [dependencies]
-hashids-rust = "1.0"
+hashids-rust = "2.0"
 ```
 
 按需开启框架适配（默认不编译任何框架）：

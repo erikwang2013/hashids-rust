@@ -192,7 +192,7 @@ Any string works as a custom agent type.
 - ALWAYS verify build succeeds before committing
 
 ```bash
-npm run build && npm test
+cargo build --all-features && cargo test --all-features
 ```
 
 ## CLI Quick Reference

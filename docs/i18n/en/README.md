@@ -145,7 +145,7 @@ Or write it straight into `Cargo.toml` (pinning the major version):
 
 ```toml
 [dependencies]
-hashids-rust = "1.0"
+hashids-rust = "2.0"
 ```
 
 Enable framework adapters as needed (none are compiled by default):

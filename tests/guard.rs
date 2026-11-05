@@ -42,6 +42,5 @@ fn clone_shares_the_same_state() {
     let guard = guard();
     let cloned = guard.clone();
     assert!(Arc::ptr_eq(guard.hashids(), cloned.hashids()));
-    assert!(std::ptr::eq(guard.manager(), cloned.manager()));
     assert_eq!(cloned.encode(&[1, 2, 3]), guard.encode(&[1, 2, 3]));
 }

@@ -56,11 +56,6 @@ impl HashidsManager {
         self
     }
 
-    /// 工厂引用。
-    pub fn factory(&self) -> &HashidsFactory {
-        &self.factory
-    }
-
     /// 取命名连接（`None` 取默认连接）；懒构建 + 缓存。
     ///
     /// # Errors

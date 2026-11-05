@@ -32,7 +32,7 @@
   .ex-motion, [class*="ex-anim-"] { animation: none !important; }
 }
 </style><g class="ex-motion ex-tongue"><g class="ex-base"><defs>
-    <style>text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "DejaVu Sans Mono", "PingFang SC", "Microsoft YaHei", monospace; }
+    <style>text { font-family: "DejaVu Sans Mono", "Source Han Mono SC", "Noto Sans Mono CJK SC", monospace; }
       .m-shadow { fill: rgba(15,23,42,.12); }
       .m-accent { color: #0891b2; }
       .m-panel  { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1.5; }

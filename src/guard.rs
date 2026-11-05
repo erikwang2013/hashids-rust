@@ -33,11 +33,6 @@ impl Guard {
         Ok(Self { manager, default })
     }
 
-    /// 底层管理器。
-    pub fn manager(&self) -> &HashidsManager {
-        &self.manager
-    }
-
     /// 默认连接实例。
     pub fn hashids(&self) -> &Arc<Hashids> {
         &self.default

@@ -15,7 +15,7 @@ use crate::Error;
 pub const DEFAULT_ALPHABET: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
 /// 默认分隔符字符集。
-pub const DEFAULT_SEPS: &str = "cfhistuCFHISTU";
+const DEFAULT_SEPS: &str = "cfhistuCFHISTU";
 
 /// guards 占比除数：`guardCount = ceil(alphabetLen / GUARD_DIV)`。
 const GUARD_DIV: usize = 12;
