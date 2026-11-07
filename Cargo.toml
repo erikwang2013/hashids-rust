@@ -1,6 +1,6 @@
 [package]
 name = "hashids-rust"
-version = "3.0.1"
+version = "3.0.2"
 edition = "2024"
 rust-version = "1.85"
 description = "Hashids for Rust: native implementation plus multi-framework integration (Axum, Actix Web, Rocket, Poem, Salvo, Warp, bee-rust, e-cat), with a multi-connection Manager + Factory API."
@@ -43,7 +43,8 @@ missing_docs = "warn"
 
 [dependencies]
 axum = { version = "0.8.9", optional = true, default-features = false }
-actix-web = { version = "4.15", optional = true, default-features = false }
+# 最低 4.18.2（actix-http 3.20.3）：修复 RUSTSEC-2026-0446/0447/0448/0455。
+actix-web = { version = "4.18.2", optional = true, default-features = false }
 rocket = { version = "0.5.1", optional = true, default-features = false }
 # poem 的 addr.rs 在 unix 上无条件引用 tokio::net::unix，而该模块由 poem 的
 # 默认 feature `server`（→ tokio/net）启用；裁掉默认 feature 会导致 poem 自身
@@ -59,7 +60,7 @@ tower = { version = "0.5.3", features = ["util"] }
 axum = "0.8.9"
 # 只测提取器，不需要 actix 的 http2/压缩/cookie 默认特性；关掉后也不再拖入
 # 有未修复 DoS 通告的 h2 0.3（RUSTSEC-2026-0258）。
-actix-web = { version = "4.15", default-features = false, features = ["macros"] }
+actix-web = { version = "4.18.2", default-features = false, features = ["macros"] }
 # 测试只走 HTTP/1；关闭 http2 默认特性，避免拖入有未修复通告的 h2 0.3。
 rocket = { version = "0.5.1", default-features = false }
 poem = { version = "3.1.12", features = ["test"] }
